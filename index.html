@@ -17,7 +17,6 @@
       --border-color: #E2E8F0;
       --radius: 16px;
 
-      /* CORES POR ÁREA MÉDICA */
       --c-cirurgia: #E5534B;
       --c-preventiva: #14B8A6;
       --c-pediatria: #F59E0B;
@@ -33,7 +32,6 @@
 
     .app { display: flex; min-height: 100vh; }
 
-    /* SIDEBAR */
     .sidebar {
       width: 260px;
       background: var(--sidebar-bg);
@@ -77,8 +75,6 @@
       user-select: none;
     }
 
-    .nav-item * { pointer-events: none; } /* Garante que o clique no texto dentro do botão não quebre o evento */
-
     .nav-item:hover { background: var(--sidebar-hover); color: #FFFFFF; }
     .nav-item.active { background: var(--sidebar-active); color: #FFFFFF; }
 
@@ -95,15 +91,9 @@
     .streak-text { font-size: 11px; color: #64748B; margin-top: 3px; }
     .countdown-box { font-size: 12px; color: #94A3B8; padding: 4px 8px; line-height: 1.4; }
 
-    /* MAIN CONTENT AREA */
     .main { flex: 1; padding: 32px 40px; max-width: 1200px; }
     .view { display: none; }
-    .view.active { display: block; animation: fadeIn 0.2s ease-in-out; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    .view.active { display: block; }
 
     .topbar { margin-bottom: 24px; }
     .topbar h1 { font-size: 24px; font-weight: 700; color: #0F172A; }
@@ -142,7 +132,6 @@
     .task-row { display: flex; align-items: flex-start; gap: 14px; font-size: 14px; line-height: 1.5; }
     .task-time { width: 90px; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-top: 2px; flex-shrink: 0; }
 
-    /* CHECKBOX TOTALMENTE CLICÁVEL */
     .task-check {
       width: 24px; height: 24px; border-radius: 6px;
       border: 2px solid #CBD5E1; background: #FFF;
@@ -165,12 +154,10 @@
       background: #0F172A; color: #FFF;
       padding: 10px 24px; border-radius: 8px;
       font-weight: 600; font-size: 14px; margin-top: 20px;
-      transition: background 0.2s;
       cursor: pointer;
     }
     .btn-save:hover { background: #1E293B; }
 
-    /* TRILHA MAPA DE BOLINHAS */
     .legend-container { display: flex; gap: 16px; margin-bottom: 24px; font-size: 13px; flex-wrap: wrap; font-weight: 500; }
     .legend-item { display: flex; align-items: center; gap: 8px; }
     .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
@@ -192,7 +179,7 @@
     }
 
     .trail-node:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
-    .trail-node span { font-size: 10px; opacity: 0.85; font-weight: 500; margin-top: 2px; }
+    .trail-node span { font-size: 10px; opacity: 0.85; font-weight: 500; margin-top: 2px; pointer-events: none; }
     .trail-node.active-day { outline: 3px solid #0EA5E9; outline-offset: 2px; }
 
     .bg-cirurgia { background-color: var(--c-cirurgia); }
@@ -203,13 +190,11 @@
     .bg-simulado { background-color: var(--c-simulado); }
     .bg-descanso { background-color: var(--c-descanso); }
 
-    /* BARRAS DE PROGRESSO */
     .stat-bar-container { margin-bottom: 16px; }
     .stat-bar-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
     .stat-bar-bg { height: 10px; background: #E2E8F0; border-radius: 10px; overflow: hidden; }
     .stat-bar-fill { height: 100%; border-radius: 10px; }
 
-    /* TABELA DE REVISÕES */
     .rev-table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 14px; }
     .rev-table th, .rev-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); }
     .rev-table th { background: #F8FAFC; color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; }
@@ -218,7 +203,6 @@
     .tag-14 { background: #FFE4E6; color: #E11D48; }
     .tag-30 { background: #FEF3C7; color: #D97706; }
 
-    /* MODAL */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.5); align-items: center; justify-content: center; z-index: 1000;
@@ -240,18 +224,10 @@
     </div>
 
     <nav class="nav">
-      <button class="nav-item active" onclick="window.switchTab('hoje', this)">
-        <span>📍 Hoje</span>
-      </button>
-      <button class="nav-item" onclick="window.switchTab('trilha', this)">
-        <span>🗺️ Trilha (47 dias)</span>
-      </button>
-      <button class="nav-item" onclick="window.switchTab('estatisticas', this)">
-        <span>📊 Estatísticas</span>
-      </button>
-      <button class="nav-item" onclick="window.switchTab('revisoes', this)">
-        <span>🔄 Revisões Espaçadas</span>
-      </button>
+      <button class="nav-item active" data-tab="hoje">📍 Hoje</button>
+      <button class="nav-item" data-tab="trilha">🗺️ Trilha (47 dias)</button>
+      <button class="nav-item" data-tab="estatisticas">📊 Estatísticas</button>
+      <button class="nav-item" data-tab="revisoes">🔄 Revisões Espaçadas</button>
     </nav>
 
     <div class="sidebar-footer">
@@ -291,22 +267,22 @@
         <div class="task-list">
           <div class="task-row">
             <div class="task-time">09:00 - 09:40</div>
-            <div class="task-check" onclick="window.toggleTask('b0', this)"></div>
+            <div class="task-check" data-task="b0"></div>
             <div>Revisão do Anki + 15 questões do Caderno de Erros do dia anterior</div>
           </div>
           <div class="task-row">
             <div class="task-time">10:00 - 16:00</div>
-            <div class="task-check" onclick="window.toggleTask('b1', this)"></div>
+            <div class="task-check" data-task="b1"></div>
             <div><b>Cirurgia Geral:</b> Estudo teórico focado + 2 blocos de 30 questões (Meta: 60 questões)</div>
           </div>
           <div class="task-row">
             <div class="task-time">16:30 - 18:00</div>
-            <div class="task-check" onclick="window.toggleTask('b2', this)"></div>
+            <div class="task-check" data-task="b2"></div>
             <div>Análise de Erros + Cadastro de novos Flashcards no Anki com imagens</div>
           </div>
           <div class="task-row">
             <div class="task-time">18:00 - 18:45</div>
-            <div class="task-check" onclick="window.toggleTask('b3', this)"></div>
+            <div class="task-check" data-task="b3"></div>
             <div>Bateria rápida de fixação (15 questões aleatórias)</div>
           </div>
         </div>
@@ -314,19 +290,19 @@
         <div class="inputs-flex">
           <div class="input-field">
             <label>Questões Feitas</label>
-            <input type="number" id="inpQ" min="0" placeholder="0" oninput="window.calculatePct()">
+            <input type="number" id="inpQ" min="0" placeholder="0">
           </div>
           <div class="input-field">
             <label>Acertos</label>
-            <input type="number" id="inpA" min="0" placeholder="0" oninput="window.calculatePct()">
+            <input type="number" id="inpA" min="0" placeholder="0">
           </div>
         </div>
 
-        <button class="btn-save" onclick="window.saveData()">💾 Salvar Progresso</button>
+        <button class="btn-save" id="btnSave">💾 Salvar Progresso</button>
       </div>
     </section>
 
-    <!-- ABA 2: TRILHA (47 DIAS) -->
+    <!-- ABA 2: TRILHA -->
     <section class="view" id="view-trilha">
       <div class="topbar">
         <h1>Trilha dos 47 Dias</h1>
@@ -442,16 +418,15 @@
 <!-- MODAL FLUTUANTE -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal-card">
-    <button class="modal-close" onclick="window.closeModal()">&times;</button>
+    <button class="modal-close" id="btnCloseModal">&times;</button>
     <span class="badge-phase" id="mPhase">DIA 1</span>
     <h3 id="mArea" style="font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #0F172A;">—</h3>
     <p id="mTopic" style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 20px;">—</p>
-    <button class="btn-save" style="width: 100%; margin: 0;" onclick="window.closeModal()">Fechar</button>
+    <button class="btn-save" style="width: 100%; margin: 0;" id="btnCloseModalBtn">Fechar</button>
   </div>
 </div>
 
 <script>
-  // BANCO DE DADOS COMPLETO DOS 47 DIAS DO REVALIDA
   const trilhaData = [
     { day: 1, area: 'Cirurgia', cls: 'bg-cirurgia', topic: 'ATLS - ABCDE do trauma + Pneumotórax' },
     { day: 2, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Princípios do SUS e Regulamentação' },
@@ -464,4 +439,14 @@
     { day: 9, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Indicadores de Saúde e Transição Epidemiológica' },
     { day: 10, area: 'Pediatria', cls: 'bg-pediatria', topic: 'Calendário de Vacinação e Imunizações' },
     { day: 11, area: 'GO', cls: 'bg-ginecologia', topic: 'Síndromes Hipertensivas na Gestação e DHEG' },
-    { day: 12, area: 'Clínica', cls: 'bg-clinica', t
+    { day: 12, area: 'Clínica', cls: 'bg-clinica', topic: 'Diabetes Mellitus: Diagnóstico e Complicações' },
+    { day: 13, area: 'Descanso', cls: 'bg-descanso', topic: 'Dia de Lazer' },
+    { day: 14, area: 'Simulado', cls: 'bg-simulado', topic: 'Revisão do Simulado + Caderno de Erros' },
+    { day: 15, area: 'Cirurgia', cls: 'bg-cirurgia', topic: 'Hérnias da Parede Abdominal' },
+    { day: 16, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Estudos Epidemiológicos: Coorte e Caso-Controle' },
+    { day: 17, area: 'Pediatria', cls: 'bg-pediatria', topic: 'Aleitamento Materno e Alimentação Complementar' },
+    { day: 18, area: 'GO', cls: 'bg-ginecologia', topic: 'Trabalho de Parto e Partograma' },
+    { day: 19, area: 'Clínica', cls: 'bg-clinica', topic: 'Insuficiência Cardíaca e Síndromes Coronarianas' },
+    { day: 20, area: 'Descanso', cls: 'bg-descanso', topic: 'Descanso Ativo' },
+    { day: 21, area: 'Simulado', cls: 'bg-simulado', topic: 'Simulado de Prova Prática / Discursiva' },
+    { day: 22, area: 'Cirurgia', cls: 'bg-cirurgia', to
