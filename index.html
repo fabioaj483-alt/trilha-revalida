@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<!-- saved from url=(0053)file:///C:/Users/fabio/Downloads/Trilha_Revalida.html -->
-<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="pt-BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trilha Revalida — Painel de Estudos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="./Trilha Revalida — Painel de Estudos_files/css2" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+
+<!-- Supabase SDK JS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 :root{
   --sidebar:#12213B; --sidebar-2:#182A48; --sidebar-text:#AEC0DA; --sidebar-text-dim:#6E80A0;
@@ -70,7 +74,6 @@ a{ color:inherit; }
 
 .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow); }
 .grid2{ display:grid; grid-template-columns:1.4fr 1fr; gap:16px; align-items:start; }
-.grid5{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; }
 
 /* Hoje / lesson card */
 .lesson-card{ position:relative; overflow:hidden; }
@@ -90,8 +93,6 @@ a{ color:inherit; }
 .block-text{ font-size:13.5px; line-height:1.5; flex:1; }
 .block-text b{ font-weight:600; }
 
-.special-banner{ margin-top:14px; background:var(--gold-bg); border:1px solid #F2D7A0; border-radius:10px; padding:11px 13px; font-size:13px; color:#7A5610; }
-
 .log-box{ margin-top:18px; padding-top:16px; border-top:1px dashed var(--line-2); }
 .log-row{ display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
 .field{ display:flex; flex-direction:column; gap:4px; }
@@ -101,7 +102,6 @@ a{ color:inherit; }
 .btn{ height:36px; padding:0 16px; border-radius:9px; border:1px solid var(--line-2); background:#fff; font-size:13px; font-weight:600; color:var(--ink); }
 .btn-primary{ background:var(--ink); color:#fff; border-color:var(--ink); }
 .btn-primary:hover{ background:#243357; }
-.btn:hover{ background:var(--card-2); }
 .save-msg{ font-size:12px; color:var(--teal); font-weight:600; margin-left:4px; opacity:0; transition:opacity .2s; }
 .save-msg.show{ opacity:1; }
 
@@ -110,50 +110,6 @@ a{ color:inherit; }
 .ring-num{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
 .ring-num .n{ font-family:'Sora',sans-serif; font-weight:700; font-size:24px; }
 .ring-num .l{ font-size:10px; color:var(--ink-2); }
-
-/* Trilha */
-.trilha-legend{ display:flex; flex-wrap:wrap; gap:10px 16px; margin-bottom:18px; }
-.legend-item{ display:flex; align-items:center; gap:6px; font-size:12px; color:var(--ink-2); }
-.legend-dot{ width:9px; height:9px; border-radius:50%; }
-.trilha-wrap{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow); overflow-x:auto; }
-.node-tip{ font-size:11px; }
-
-/* Modal */
-.overlay{ position:fixed; inset:0; background:rgba(18,33,59,0.45); display:none; align-items:center; justify-content:center; z-index:50; padding:20px; }
-.overlay.open{ display:flex; }
-.modal{ background:#fff; border-radius:16px; max-width:460px; width:100%; padding:22px 24px; max-height:86vh; overflow-y:auto; box-shadow:0 20px 60px rgba(18,33,59,0.25); }
-.modal-close{ float:right; background:none; border:none; font-size:18px; color:var(--ink-3); }
-
-/* Stats */
-.stat-row{ display:flex; align-items:center; gap:14px; padding:13px 0; border-top:1px solid var(--line); }
-.stat-row:first-child{ border-top:none; }
-.stat-area-name{ width:150px; flex-shrink:0; font-size:13px; font-weight:600; }
-.stat-bar-wrap{ flex:1; height:10px; background:var(--gray-bg); border-radius:6px; position:relative; overflow:visible; }
-.stat-bar-fill{ height:100%; border-radius:6px; }
-.stat-meta-mark{ position:absolute; top:-3px; width:2px; height:16px; background:var(--ink); opacity:.35; }
-.stat-pct{ width:54px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; flex-shrink:0; }
-.status-pill{ font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:10px; width:78px; text-align:center; flex-shrink:0; }
-
-.kpi-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:18px; }
-.kpi{ background:var(--card-2); border-radius:12px; padding:14px 16px; }
-.kpi .v{ font-family:'Sora',sans-serif; font-weight:700; font-size:22px; }
-.kpi .l{ font-size:11.5px; color:var(--ink-2); margin-top:2px; }
-
-canvas{ max-width:100%; }
-
-/* Reminders */
-.rem-item{ display:flex; gap:12px; align-items:flex-start; padding:14px 0; border-top:1px solid var(--line); }
-.rem-item:first-child{ border-top:none; }
-.rem-badge{ font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:8px; flex-shrink:0; margin-top:1px; white-space:nowrap; }
-.rem-check{ width:22px; height:22px; border-radius:7px; border:1.5px solid var(--line-2); background:#fff; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
-.rem-check.done{ background:var(--teal); border-color:var(--teal); }
-.rem-check svg{ width:13px; height:13px; color:#fff; display:none; }
-.rem-check.done svg{ display:block; }
-.empty-state{ text-align:center; padding:40px 20px; color:var(--ink-2); }
-.empty-state svg{ width:40px; height:40px; color:var(--ink-3); margin-bottom:10px; }
-
-.section-title{ font-size:15px; font-weight:600; margin-bottom:14px; }
-.subsection{ margin-top:22px; }
 
 @media (max-width: 860px){
   .app{ flex-direction:column; }
@@ -165,7 +121,6 @@ canvas{ max-width:100%; }
   .main{ padding:20px 16px 40px; }
   .grid2{ grid-template-columns:1fr; }
 }
-@media (prefers-reduced-motion: reduce){ *{ animation:none !important; transition:none !important; } }
 </style>
 </head>
 <body>
@@ -187,19 +142,6 @@ canvas{ max-width:100%; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
         <span>Hoje</span>
       </button>
-      <button class="nav-item" data-view="trilha">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="5" r="2"></circle><path d="M6 17V9a4 4 0 0 1 4-4h4a4 4 0 0 0 4-4"></path></svg>
-        <span>Trilha (47 dias)</span>
-      </button>
-      <button class="nav-item" data-view="stats">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M18 17V9M13 17V5M8 17v-4"></path></svg>
-        <span>Estatísticas</span>
-      </button>
-      <button class="nav-item" data-view="revisoes">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-        <span>Revisões</span>
-        <span id="remBadge" style="display:none; margin-left:auto; background:var(--coral); color:#fff; font-size:10px; font-weight:700; border-radius:10px; padding:1px 6px;"></span>
-      </button>
     </nav>
 
     <div class="sidebar-bottom">
@@ -210,491 +152,184 @@ canvas{ max-width:100%; }
           <div class="streak-label">dias seguidos<br>registrando estudo</div>
         </div>
       </div>
-      <div class="exam-countdown-mini">Faltam <b id="miniCountdown">46</b> dias para o Revalida (13/09/2026)</div>
+      <div class="exam-countdown-mini">Faltam <b id="miniCountdown">--</b> dias para o Revalida</div>
     </div>
   </aside>
 
   <main class="main">
     <div class="topbar">
       <h1 id="topTitle">Hoje</h1>
-      <div class="date-pill" id="topDate">29/07/2026 · Quarta</div>
+      <div class="date-pill" id="topDate">--/--/----</div>
     </div>
 
-    <section class="view active" id="view-hoje"><div class="grid2"><div class="card lesson-card"><span class="lesson-phase-tag" style="background:var(--coral-bg); color:var(--coral);">Fase 1 · Quarta</span><div class="lesson-title">Cirurgia Geral</div><div class="lesson-sub">ATLS - ABCDE do trauma + pneumotórax hipertensivo</div><div class="block-list"><div class="block-item"><div class="block-time">10h00</div><button class="block-check done" data-blockkey="2026-07-29_b0" aria-label="Marcar bloco concluído"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="block-text">Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)</div></div><div class="block-item"><div class="block-time">11h-17h</div><button class="block-check" data-blockkey="2026-07-29_b1" aria-label="Marcar bloco concluído"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="block-text"><b>Cirurgia Geral</b> — ATLS - ABCDE do trauma + pneumotórax hipertensivo. Meta: 30-40 questões x2 blocos (60-80 no dia)</div></div><div class="block-item"><div class="block-time">17h-18h30</div><button class="block-check done" data-blockkey="2026-07-29_b2" aria-label="Marcar bloco concluído"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="block-text">Alimentar Caderno de Erros + criar flashcards novos no Anki</div></div><div class="block-item"><div class="block-time">18h30-19h15</div><button class="block-check" data-blockkey="2026-07-29_b3" aria-label="Marcar bloco concluído"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="block-text">10-15 questões rápidas de revisão geral</div></div></div><div class="log-box"><div class="log-row"><div class="field"><label>Questões feitas</label><input type="number" min="0" id="inpQ" value=""></div><div class="field"><label>Acertos</label><input type="number" min="0" id="inpA" value=""></div><button class="btn btn-primary" id="btnSaveLog">Salvar</button><span class="save-msg" id="saveMsg">Salvo</span></div></div></div><div class="card ring-card"><div class="ring-wrap" style="background:conic-gradient(#D2D8E4 0deg, #EAEDF3 0deg);"><div style="position:absolute; inset:8px; border-radius:50%; background:#fff;"></div><div class="ring-num"><div class="n mono">--</div><div class="l">ainda não registrado</div></div></div><div style="font-size:12.5px; color:var(--ink-2); margin-top:4px;">Rendimento de hoje</div></div></div></section>
-    <section class="view" id="view-trilha"><div class="trilha-legend"><div class="legend-item"><span class="legend-dot" style="background:#E2574C;"></span>Cirurgia Geral</div><div class="legend-item"><span class="legend-dot" style="background:#17A398;"></span>Medicina Preventiva</div><div class="legend-item"><span class="legend-dot" style="background:#F2B134;"></span>Pediatria</div><div class="legend-item"><span class="legend-dot" style="background:#7B5EA7;"></span>Ginecologia e Obstetrícia</div><div class="legend-item"><span class="legend-dot" style="background:#3D6FB4;"></span>Clínica Médica</div><div class="legend-item"><span class="legend-dot" style="background:#16213A;"></span>Simulado</div><div class="legend-item"><span class="legend-dot" style="background:#9AA4B8;"></span>Descanso</div></div><div class="trilha-wrap"><svg viewBox="0 0 780 652" style="width:100%; height:auto; min-width:640px;" role="img" aria-label="Trilha de 47 dias de estudo até a prova"><path d="M46,40 L160.66666666666669,40 L275.33333333333337,40 L390,40 L504.6666666666667,40 L619.3333333333334,40 L734,40 L734,132 L619.3333333333334,132 L504.6666666666667,132 L390,132 L275.33333333333337,132 L160.66666666666669,132 L46,132 L46,224 L160.66666666666669,224 L275.33333333333337,224 L390,224 L504.6666666666667,224 L619.3333333333334,224 L734,224 L734,316 L619.3333333333334,316 L504.6666666666667,316 L390,316 L275.33333333333337,316 L160.66666666666669,316 L46,316 L46,408 L160.66666666666669,408 L275.33333333333337,408 L390,408 L504.6666666666667,408 L619.3333333333334,408 L734,408 L734,500 L619.3333333333334,500 L504.6666666666667,500 L390,500 L275.33333333333337,500 L160.66666666666669,500 L46,500 L46,592 L160.66666666666669,592 L275.33333333333337,592 L390,592 L504.6666666666667,592" fill="none" stroke="#D2D8E4" stroke-width="3"></path><g class="trilha-node" data-date="2026-07-29" style="cursor:pointer;"><circle cx="46" cy="40" r="24" fill="none" stroke="#E2574C" stroke-width="2" stroke-dasharray="3 3"></circle><circle cx="46" cy="40" r="17" fill="#E2574C" opacity="1"></circle><text x="46" y="43" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">1</text><title>29/07/2026 · Cirurgia Geral</title></g><g class="trilha-node" data-date="2026-07-30" style="cursor:pointer;"><circle cx="160.66666666666669" cy="40" r="17" fill="#17A398" opacity="1"></circle><text x="160.66666666666669" y="43" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">2</text><title>30/07/2026 · Medicina Preventiva</title></g><g class="trilha-node" data-date="2026-07-31" style="cursor:pointer;"><circle cx="275.33333333333337" cy="40" r="17" fill="#F2B134" opacity="1"></circle><text x="275.33333333333337" y="43" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">3</text><title>31/07/2026 · Pediatria</title></g><g class="trilha-node" data-date="2026-08-01" style="cursor:pointer;"><circle cx="390" cy="40" r="17" fill="#16213A" opacity="1"></circle><text x="390" y="43" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">4</text><title>01/08/2026 · Simulado</title></g><g class="trilha-node" data-date="2026-08-02" style="cursor:pointer;"><circle cx="504.6666666666667" cy="40" r="17" fill="#9AA4B8" opacity="0.55"></circle><text x="504.6666666666667" y="43" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">5</text><title>02/08/2026 · Descanso</title></g><g class="trilha-node" data-date="2026-08-03" style="cursor:pointer;"><circle cx="619.3333333333334" cy="40" r="17" fill="#E2574C" opacity="1"></circle><text x="619.3333333333334" y="43" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">6</text><title>03/08/2026 · Cirurgia Geral</title></g><g class="trilha-node" data-date="2026-08-04" style="cursor:pointer;"><circle cx="734" cy="40" r="17" fill="#7B5EA7" opacity="1"></circle><text x="734" y="43" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">7</text><title>04/08/2026 · Ginecologia e Obstetrícia</title></g><g class="trilha-node" data-date="2026-08-05" style="cursor:pointer;"><circle cx="734" cy="132" r="17" fill="#17A398" opacity="1"></circle><text x="734" y="135" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">8</text><title>05/08/2026 · Medicina Preventiva</title></g><g class="trilha-node" data-date="2026-08-06" style="cursor:pointer;"><circle cx="619.3333333333334" cy="132" r="17" fill="#E2574C" opacity="1"></circle><text x="619.3333333333334" y="135" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">9</text><title>06/08/2026 · Cirurgia Geral</title></g><g class="trilha-node" data-date="2026-08-07" style="cursor:pointer;"><circle cx="504.6666666666667" cy="132" r="17" fill="#F2B134" opacity="1"></circle><text x="504.6666666666667" y="135" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">10</text><title>07/08/2026 · Pediatria</title></g><g class="trilha-node" data-date="2026-08-08" style="cursor:pointer;"><circle cx="390" cy="132" r="17" fill="#16213A" opacity="1"></circle><text x="390" y="135" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">11</text><title>08/08/2026 · Simulado</title></g><g class="trilha-node" data-date="2026-08-09" style="cursor:pointer;"><circle cx="275.33333333333337" cy="132" r="17" fill="#9AA4B8" opacity="0.55"></circle><text x="275.33333333333337" y="135" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">12</text><title>09/08/2026 · Descanso</title></g><g class="trilha-node" data-date="2026-08-10" style="cursor:pointer;"><circle cx="160.66666666666669" cy="132" r="17" fill="#3D6FB4" opacity="1"></circle><text x="160.66666666666669" y="135" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">13</text><title>10/08/2026 · Clínica Médica</title></g><g class="trilha-node" data-date="2026-08-11" style="cursor:pointer;"><circle cx="46" cy="132" r="17" fill="#7B5EA7" opacity="1"></circle><text x="46" y="135" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">14</text><title>11/08/2026 · Ginecologia e Obstetrícia</title></g><g class="trilha-node" data-date="2026-08-12" style="cursor:pointer;"><circle cx="46" cy="224" r="17" fill="#E2574C" opacity="1"></circle><text x="46" y="227" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">15</text><title>12/08/2026 · Cirurgia Geral</title></g><g class="trilha-node" data-date="2026-08-13" style="cursor:pointer;"><circle cx="160.66666666666669" cy="224" r="17" fill="#17A398" opacity="1"></circle><text x="160.66666666666669" y="227" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">16</text><title>13/08/2026 · Medicina Preventiva</title></g><g class="trilha-node" data-date="2026-08-14" style="cursor:pointer;"><circle cx="275.33333333333337" cy="224" r="17" fill="#F2B134" opacity="1"></circle><text x="275.33333333333337" y="227" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">17</text><title>14/08/2026 · Pediatria</title></g><g class="trilha-node" data-date="2026-08-15" style="cursor:pointer;"><circle cx="390" cy="224" r="17" fill="#16213A" opacity="1"></circle><text x="390" y="227" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">18</text><title>15/08/2026 · Simulado</title></g><g class="trilha-node" data-date="2026-08-16" style="cursor:pointer;"><circle cx="504.6666666666667" cy="224" r="17" fill="#9AA4B8" opacity="0.55"></circle><text x="504.6666666666667" y="227" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">19</text><title>16/08/2026 · Descanso</title></g><g class="trilha-node" data-date="2026-08-17" style="cursor:pointer;"><circle cx="619.3333333333334" cy="224" r="17" fill="#3D6FB4" opacity="1"></circle><text x="619.3333333333334" y="227" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">20</text><title>17/08/2026 · Clínica Médica</title></g><g class="trilha-node" data-date="2026-08-18" style="cursor:pointer;"><circle cx="734" cy="224" r="17" fill="#E2574C" opacity="1"></circle><text x="734" y="227" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">21</text><title>18/08/2026 · Cirurgia Geral</title></g><g class="trilha-node" data-date="2026-08-19" style="cursor:pointer;"><circle cx="734" cy="316" r="17" fill="#7B5EA7" opacity="1"></circle><text x="734" y="319" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">22</text><title>19/08/2026 · Ginecologia e Obstetrícia</title></g><g class="trilha-node" data-date="2026-08-20" style="cursor:pointer;"><circle cx="619.3333333333334" cy="316" r="17" fill="#17A398" opacity="1"></circle><text x="619.3333333333334" y="319" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">23</text><title>20/08/2026 · Medicina Preventiva</title></g><g class="trilha-node" data-date="2026-08-21" style="cursor:pointer;"><circle cx="504.6666666666667" cy="316" r="17" fill="#F2B134" opacity="1"></circle><text x="504.6666666666667" y="319" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">24</text><title>21/08/2026 · Pediatria</title></g><g class="trilha-node" data-date="2026-08-22" style="cursor:pointer;"><circle cx="390" cy="316" r="17" fill="#16213A" opacity="1"></circle><text x="390" y="319" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">25</text><title>22/08/2026 · Simulado</title></g><g class="trilha-node" data-date="2026-08-23" style="cursor:pointer;"><circle cx="275.33333333333337" cy="316" r="17" fill="#9AA4B8" opacity="0.55"></circle><text x="275.33333333333337" y="319" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">26</text><title>23/08/2026 · Descanso</title></g><g class="trilha-node" data-date="2026-08-24" style="cursor:pointer;"><circle cx="160.66666666666669" cy="316" r="17" fill="#E2574C" opacity="1"></circle><text x="160.66666666666669" y="319" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">27</text><title>24/08/2026 · Cirurgia Geral</title></g><g class="trilha-node" data-date="2026-08-25" style="cursor:pointer;"><circle cx="46" cy="316" r="17" fill="#3D6FB4" opacity="1"></circle><text x="46" y="319" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">28</text><title>25/08/2026 · Clínica Médica</title></g><g class="trilha-node" data-date="2026-08-26" style="cursor:pointer;"><circle cx="46" cy="408" r="17" fill="#7B5EA7" opacity="1"></circle><text x="46" y="411" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">29</text><title>26/08/2026 · Ginecologia e Obstetrícia</title></g><g class="trilha-node" data-date="2026-08-27" style="cursor:pointer;"><circle cx="160.66666666666669" cy="408" r="17" fill="#17A398" opacity="1"></circle><text x="160.66666666666669" y="411" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">30</text><title>27/08/2026 · Medicina Preventiva</title></g><g class="trilha-node" data-date="2026-08-28" style="cursor:pointer;"><circle cx="275.33333333333337" cy="408" r="17" fill="#F2B134" opacity="1"></circle><text x="275.33333333333337" y="411" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">31</text><title>28/08/2026 · Pediatria</title></g><g class="trilha-node" data-date="2026-08-29" style="cursor:pointer;"><circle cx="390" cy="408" r="17" fill="#16213A" opacity="1"></circle><text x="390" y="411" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">32</text><title>29/08/2026 · Simulado</title></g><g class="trilha-node" data-date="2026-08-30" style="cursor:pointer;"><circle cx="504.6666666666667" cy="408" r="17" fill="#9AA4B8" opacity="0.55"></circle><text x="504.6666666666667" y="411" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">33</text><title>30/08/2026 · Descanso</title></g><g class="trilha-node" data-date="2026-08-31" style="cursor:pointer;"><circle cx="619.3333333333334" cy="408" r="17" fill="#3D6FB4" opacity="1"></circle><text x="619.3333333333334" y="411" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">34</text><title>31/08/2026 · Clínica Médica</title></g><g class="trilha-node" data-date="2026-09-01" style="cursor:pointer;"><circle cx="734" cy="408" r="17" fill="#E2574C" opacity="1"></circle><text x="734" y="411" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">35</text><title>01/09/2026 · Cirurgia Geral</title></g><g class="trilha-node" data-date="2026-09-02" style="cursor:pointer;"><circle cx="734" cy="500" r="17" fill="#7B5EA7" opacity="1"></circle><text x="734" y="503" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">36</text><title>02/09/2026 · Ginecologia e Obstetrícia</title></g><g class="trilha-node" data-date="2026-09-03" style="cursor:pointer;"><circle cx="619.3333333333334" cy="500" r="17" fill="#17A398" opacity="1"></circle><text x="619.3333333333334" y="503" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">37</text><title>03/09/2026 · Medicina Preventiva</title></g><g class="trilha-node" data-date="2026-09-04" style="cursor:pointer;"><circle cx="504.6666666666667" cy="500" r="17" fill="#F2B134" opacity="1"></circle><text x="504.6666666666667" y="503" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">38</text><title>04/09/2026 · Pediatria</title></g><g class="trilha-node" data-date="2026-09-05" style="cursor:pointer;"><circle cx="390" cy="500" r="17" fill="#16213A" opacity="1"></circle><text x="390" y="503" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">39</text><title>05/09/2026 · Simulado</title></g><g class="trilha-node" data-date="2026-09-06" style="cursor:pointer;"><circle cx="275.33333333333337" cy="500" r="17" fill="#9AA4B8" opacity="0.55"></circle><text x="275.33333333333337" y="503" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">40</text><title>06/09/2026 · Descanso</title></g><g class="trilha-node" data-date="2026-09-07" style="cursor:pointer;"><circle cx="160.66666666666669" cy="500" r="17" fill="#E2574C" opacity="1"></circle><text x="160.66666666666669" y="503" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">41</text><title>07/09/2026 · Cirurgia Geral</title></g><g class="trilha-node" data-date="2026-09-08" style="cursor:pointer;"><circle cx="46" cy="500" r="17" fill="#17A398" opacity="1"></circle><text x="46" y="503" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">42</text><title>08/09/2026 · Medicina Preventiva</title></g><g class="trilha-node" data-date="2026-09-09" style="cursor:pointer;"><circle cx="46" cy="592" r="17" fill="#F2B134" opacity="1"></circle><text x="46" y="595" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">43</text><title>09/09/2026 · Pediatria</title></g><g class="trilha-node" data-date="2026-09-10" style="cursor:pointer;"><circle cx="160.66666666666669" cy="592" r="17" fill="#7B5EA7" opacity="1"></circle><text x="160.66666666666669" y="595" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">44</text><title>10/09/2026 · Ginecologia e Obstetrícia</title></g><g class="trilha-node" data-date="2026-09-11" style="cursor:pointer;"><circle cx="275.33333333333337" cy="592" r="17" fill="#3D6FB4" opacity="1"></circle><text x="275.33333333333337" y="595" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">45</text><title>11/09/2026 · Revisão Geral</title></g><g class="trilha-node" data-date="2026-09-12" style="cursor:pointer;"><circle cx="390" cy="592" r="17" fill="#F2B134" opacity="1"></circle><text x="390" y="595" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">46</text><title>12/09/2026 · Reta final</title></g><g class="trilha-node" data-date="2026-09-13" style="cursor:pointer;"><circle cx="504.6666666666667" cy="592" r="22" fill="#E2574C" opacity="1"></circle><text x="504.6666666666667" y="595" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">47</text><title>13/09/2026 · PROVA</title></g></svg></div></section>
-    <section class="view" id="view-stats"><div class="kpi-grid"><div class="kpi"><div class="v mono">0/47</div><div class="l">dias registrados</div></div><div class="kpi"><div class="v mono">0</div><div class="l">questões respondidas</div></div><div class="kpi"><div class="v mono">--</div><div class="l">rendimento geral no período</div></div><div class="kpi"><div class="v mono">0</div><div class="l">dias seguidos de sequência</div></div></div><div class="card"><div class="section-title">Progresso por área (meta = traço vertical)</div><div class="stat-row"><div class="stat-area-name">Cirurgia Geral</div><div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:40%; background:#E2574C;"></div><div class="stat-meta-mark" style="left:65%;"></div></div><div class="stat-pct">40%</div><div class="status-pill" style="background:var(--coral-bg); color:var(--coral);">Abaixo</div></div><div class="stat-row"><div class="stat-area-name">Medicina Preventiva</div><div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:65%; background:#17A398;"></div><div class="stat-meta-mark" style="left:85%;"></div></div><div class="stat-pct">65%</div><div class="status-pill" style="background:var(--coral-bg); color:var(--coral);">Abaixo</div></div><div class="stat-row"><div class="stat-area-name">Pediatria</div><div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:55%; background:#F2B134;"></div><div class="stat-meta-mark" style="left:75%;"></div></div><div class="stat-pct">55%</div><div class="status-pill" style="background:var(--coral-bg); color:var(--coral);">Abaixo</div></div><div class="stat-row"><div class="stat-area-name">Ginecologia e Obstetrícia</div><div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:60%; background:#7B5EA7;"></div><div class="stat-meta-mark" style="left:75%;"></div></div><div class="stat-pct">60%</div><div class="status-pill" style="background:var(--coral-bg); color:var(--coral);">Abaixo</div></div><div class="stat-row"><div class="stat-area-name">Clínica Médica</div><div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:65%; background:#3D6FB4;"></div><div class="stat-meta-mark" style="left:70%;"></div></div><div class="stat-pct">65%</div><div class="status-pill" style="background:var(--teal-bg); color:var(--teal);">Na meta</div></div></div><div class="card subsection"><div class="section-title">Evolução do rendimento</div><div style="position:relative; width:100%; height:260px;"><canvas id="trendCanvas" role="img" aria-label="Gráfico de evolução do rendimento em simulados e dias de estudo registrados" width="989" height="260" style="display: block; box-sizing: border-box; height: 260px; width: 989px;"></canvas></div></div></section>
-    <section class="view" id="view-revisoes"><div class="card"><div class="section-title">Revisão espaçada de hoje (7 / 14 / 30 dias)</div><div class="empty-state"><div style="font-size:13.5px;">Nenhuma revisão programada ainda — isso passa a aparecer a partir do 8º dia de trilha.</div></div></div></section>
+    <section class="view active" id="view-hoje">
+      <div class="grid2">
+        <div class="card lesson-card">
+          <span class="lesson-phase-tag" style="background:var(--coral-bg); color:var(--coral);">Fase 1 · Estudo</span>
+          <div class="lesson-title">Cirurgia Geral</div>
+          <div class="lesson-sub">ATLS - ABCDE do trauma + pneumotórax hipertensivo</div>
+          
+          <div class="block-list">
+            <div class="block-item">
+              <div class="block-time">10h00</div>
+              <button class="block-check" data-blockkey="b0" aria-label="Marcar bloco concluído">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </button>
+              <div class="block-text">Anki (30-40min) + 15-20 questões Caderno de Erros</div>
+            </div>
+            <div class="block-item">
+              <div class="block-time">11h-17h</div>
+              <button class="block-check" data-blockkey="b1" aria-label="Marcar bloco concluído">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </button>
+              <div class="block-text"><b>Cirurgia Geral</b> — Meta: 30-40 questões x2 blocos</div>
+            </div>
+          </div>
+
+          <div class="log-box">
+            <div class="log-row">
+              <div class="field">
+                <label>Questões feitas</label>
+                <input type="number" min="0" id="inpQ" value="">
+              </div>
+              <div class="field">
+                <label>Acertos</label>
+                <input type="number" min="0" id="inpA" value="">
+              </div>
+              <button class="btn btn-primary" id="btnSaveLog">Salvar na Nuvem</button>
+              <span class="save-msg" id="saveMsg">Salvo!</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card ring-card">
+          <div class="ring-wrap" id="ringWrap" style="background:conic-gradient(#D2D8E4 0deg, #EAEDF3 0deg);">
+            <div style="position:absolute; inset:8px; border-radius:50%; background:#fff;"></div>
+            <div class="ring-num">
+              <div class="n mono" id="ringPct">--%</div>
+              <div class="l" id="ringSub">não registrado</div>
+            </div>
+          </div>
+          <div style="font-size:12.5px; color:var(--ink-2); margin-top:4px;">Rendimento de hoje</div>
+        </div>
+      </div>
+    </section>
   </main>
 </div>
 
-<div class="overlay" id="modalOverlay">
-  <div class="modal" id="modalContent"><button class="modal-close" id="modalCloseBtn" aria-label="Fechar">×</button><span class="lesson-phase-tag" style="background:var(--coral-bg); color:var(--coral);">Fase 1 · 29/07/2026 · Quarta</span><div class="lesson-title">Cirurgia Geral</div><div class="lesson-sub">ATLS - ABCDE do trauma + pneumotórax hipertensivo</div><div style="font-size:13px; margin-top:14px;"><b>10h:</b> Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)</div><div style="font-size:13px; margin-top:8px;"><b>Meta de questões:</b> 30-40 questões x2 blocos (60-80 no dia)</div><div style="font-size:13px; margin-top:8px;"><b>18h30:</b> 10-15 questões rápidas de revisão geral</div><div class="log-box"><div class="log-row"><div class="field"><label>Questões feitas</label><input type="number" min="0" id="modalQ" value=""></div><div class="field"><label>Acertos</label><input type="number" min="0" id="modalA" value=""></div><button class="btn btn-primary" id="modalSave">Salvar</button><span class="save-msg" id="modalSaveMsg">Salvo</span></div></div></div>
-</div>
-
-<script src="./Trilha Revalida — Painel de Estudos_files/chart.umd.js.download"></script>
 <script>
-const DATA = {"examDate":"2026-09-13","startDate":"2026-07-29","areaShort":{"Cirurgia Geral":"CIR","Medicina Preventiva":"PREV","Pediatria":"PED","Ginecologia e Obstetrícia":"GO","Clínica Médica":"CM"},"metaTarget":{"Cirurgia Geral":[12,14],"Pediatria":[14,16],"Ginecologia e Obstetrícia":[14,16],"Clínica Médica":[13,15],"Medicina Preventiva":[16,18]},"baselinePct":{"Cirurgia Geral":40.0,"Pediatria":55.0,"Ginecologia e Obstetrícia":60.0,"Clínica Médica":65.0,"Medicina Preventiva":65.0},"simuladosHistorico":[{"label":"Simulado 1 (abr/2026, sem estudar)","pct":41},{"label":"Simulado 2 (Revalida 2020)","pct":51},{"label":"Simulado 3 (25/07/2026, Revalida 2021)","pct":57}],"days":[{"date":"2026-07-29","weekday":"Quarta","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Cirurgia Geral","subtema":"ATLS - ABCDE do trauma + pneumotórax hipertensivo","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas de revisão geral"},{"date":"2026-07-30","weekday":"Quinta","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Medicina Preventiva","subtema":"Indicadores de saúde: mortalidade infantil e materna","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas de revisão geral"},{"date":"2026-07-31","weekday":"Sexta","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Pediatria","subtema":"Calendário vacinal (PNI) atualizado","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Cirurgia Geral"},{"date":"2026-08-01","weekday":"Sábado","phase":1,"isRest":false,"isSimulado":true,"isExam":false,"area":"Simulado","subtema":"Simulado geral (todas as áreas)","meta_questoes":"50-100 questões mistas","acao_especial":"Simulado — corrigir na segunda de manhã.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-02","weekday":"Domingo","phase":1,"isRest":true,"isSimulado":false,"isExam":false,"area":"Descanso","subtema":"Descanso total","meta_questoes":"-","acao_especial":"Descanso inviolável — 0 estudo.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-03","weekday":"Segunda","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Cirurgia Geral","subtema":"Abdome agudo: apendicite vs colecistite vs diverticulite","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"MANHÃ: correção do simulado de sábado (gabarito oficial, 2-3h). Bloco da tarde segue normal.","bloco_manha":"Correção do simulado de sábado","bloco_flash":"10-15 questões rápidas: Pediatria"},{"date":"2026-08-04","weekday":"Terça","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Ginecologia e Obstetrícia","subtema":"Pré-natal de baixo risco: rotina e exames","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas de revisão geral"},{"date":"2026-08-05","weekday":"Quarta","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Medicina Preventiva","subtema":"Epidemiologia: sensibilidade, especificidade, VPP/VPN","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Cirurgia Geral"},{"date":"2026-08-06","weekday":"Quinta","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Cirurgia Geral","subtema":"Trauma abdominal fechado e FAST","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Ginecologia e Obstetrícia + Cirurgia Geral"},{"date":"2026-08-07","weekday":"Sexta","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Pediatria","subtema":"Reanimação neonatal","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Medicina Preventiva + Ginecologia e Obstetrícia"},{"date":"2026-08-08","weekday":"Sábado","phase":1,"isRest":false,"isSimulado":true,"isExam":false,"area":"Simulado","subtema":"Simulado geral (todas as áreas)","meta_questoes":"50-100 questões mistas","acao_especial":"Simulado — corrigir na segunda de manhã.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-09","weekday":"Domingo","phase":1,"isRest":true,"isSimulado":false,"isExam":false,"area":"Descanso","subtema":"Descanso total","meta_questoes":"-","acao_especial":"Descanso inviolável — 0 estudo.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-10","weekday":"Segunda","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Clínica Médica","subtema":"Cardiologia: SCA, insuficiência cardíaca, arritmias","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"MANHÃ: correção do simulado de sábado (gabarito oficial, 2-3h). Bloco da tarde segue normal.","bloco_manha":"Correção do simulado de sábado","bloco_flash":"10-15 questões rápidas: Pediatria"},{"date":"2026-08-11","weekday":"Terça","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Ginecologia e Obstetrícia","subtema":"Protocolos de parto (MS) e distócias","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas de revisão geral"},{"date":"2026-08-12","weekday":"Quarta","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Cirurgia Geral","subtema":"Politrauma e choque hemorrágico","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Clínica Médica"},{"date":"2026-08-13","weekday":"Quinta","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Medicina Preventiva","subtema":"Atenção Primária / Estratégia Saúde da Família","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Ginecologia e Obstetrícia + Clínica Médica"},{"date":"2026-08-14","weekday":"Sexta","phase":1,"isRest":false,"isSimulado":false,"isExam":false,"area":"Pediatria","subtema":"Diarreia/desidratação: Planos A, B e C","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Cirurgia Geral + Ginecologia e Obstetrícia"},{"date":"2026-08-15","weekday":"Sábado","phase":1,"isRest":false,"isSimulado":true,"isExam":false,"area":"Simulado","subtema":"Simulado geral (todas as áreas)","meta_questoes":"50-100 questões mistas","acao_especial":"Simulado — corrigir na segunda de manhã.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-16","weekday":"Domingo","phase":1,"isRest":true,"isSimulado":false,"isExam":false,"area":"Descanso","subtema":"Descanso total","meta_questoes":"-","acao_especial":"Descanso inviolável — 0 estudo.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-17","weekday":"Segunda","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Clínica Médica","subtema":"Pneumologia: DPOC, asma, pneumonia","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"MANHÃ: correção do simulado de sábado (gabarito oficial, 2-3h). Bloco da tarde segue normal.","bloco_manha":"Correção do simulado de sábado","bloco_flash":"10-15 questões rápidas: Pediatria"},{"date":"2026-08-18","weekday":"Terça","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Cirurgia Geral","subtema":"Pré e pós-operatório: complicações e cuidados","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas de revisão geral"},{"date":"2026-08-19","weekday":"Quarta","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Ginecologia e Obstetrícia","subtema":"Doença hipertensiva da gestação: pré-eclâmpsia/eclâmpsia","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Clínica Médica"},{"date":"2026-08-20","weekday":"Quinta","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Medicina Preventiva","subtema":"SUS: princípios, diretrizes e financiamento","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Cirurgia Geral + Clínica Médica"},{"date":"2026-08-21","weekday":"Sexta","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Pediatria","subtema":"Puericultura: crescimento e desenvolvimento","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Ginecologia e Obstetrícia + Cirurgia Geral"},{"date":"2026-08-22","weekday":"Sábado","phase":2,"isRest":false,"isSimulado":true,"isExam":false,"area":"Simulado","subtema":"Simulado geral (todas as áreas)","meta_questoes":"100-150 questões (cronometrado)","acao_especial":"Simulado — corrigir na segunda de manhã.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-23","weekday":"Domingo","phase":2,"isRest":true,"isSimulado":false,"isExam":false,"area":"Descanso","subtema":"Descanso total","meta_questoes":"-","acao_especial":"Descanso inviolável — 0 estudo.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-24","weekday":"Segunda","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Cirurgia Geral","subtema":"Cirurgia vascular: isquemia aguda de membro, aneurisma de aorta","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"MANHÃ: correção do simulado de sábado (gabarito oficial, 2-3h). Bloco da tarde segue normal.","bloco_manha":"Correção do simulado de sábado","bloco_flash":"10-15 questões rápidas: Pediatria"},{"date":"2026-08-25","weekday":"Terça","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Clínica Médica","subtema":"Gastroenterologia: hepatopatias, pancreatite, DII","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas de revisão geral"},{"date":"2026-08-26","weekday":"Quarta","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Ginecologia e Obstetrícia","subtema":"Diabetes gestacional","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Cirurgia Geral"},{"date":"2026-08-27","weekday":"Quinta","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Medicina Preventiva","subtema":"Vigilância epidemiológica e notificação compulsória","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Clínica Médica + Cirurgia Geral"},{"date":"2026-08-28","weekday":"Sexta","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Pediatria","subtema":"Doenças exantemáticas","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Ginecologia e Obstetrícia + Clínica Médica"},{"date":"2026-08-29","weekday":"Sábado","phase":2,"isRest":false,"isSimulado":true,"isExam":false,"area":"Simulado","subtema":"Simulado geral (todas as áreas)","meta_questoes":"100-150 questões (cronometrado)","acao_especial":"Simulado — corrigir na segunda de manhã.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-30","weekday":"Domingo","phase":2,"isRest":true,"isSimulado":false,"isExam":false,"area":"Descanso","subtema":"Descanso total","meta_questoes":"-","acao_especial":"Descanso inviolável — 0 estudo.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-08-31","weekday":"Segunda","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Clínica Médica","subtema":"Nefrologia: IRA, síndrome nefrítica/nefrótica, DRC","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"MANHÃ: correção do simulado de sábado (gabarito oficial, 2-3h). Bloco da tarde segue normal.","bloco_manha":"Correção do simulado de sábado","bloco_flash":"10-15 questões rápidas: Pediatria"},{"date":"2026-09-01","weekday":"Terça","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Cirurgia Geral","subtema":"Queimaduras: classificação e manejo inicial","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas de revisão geral"},{"date":"2026-09-02","weekday":"Quarta","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Ginecologia e Obstetrícia","subtema":"Rastreamento de câncer de mama e colo do útero","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Clínica Médica"},{"date":"2026-09-03","weekday":"Quinta","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Medicina Preventiva","subtema":"Rastreamento de câncer (colo do útero, mama, próstata)","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Cirurgia Geral + Clínica Médica"},{"date":"2026-09-04","weekday":"Sexta","phase":2,"isRest":false,"isSimulado":false,"isExam":false,"area":"Pediatria","subtema":"Infecções respiratórias: bronquiolite e pneumonia","meta_questoes":"30-40 questões x2 blocos (60-80 no dia)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Ginecologia e Obstetrícia + Cirurgia Geral"},{"date":"2026-09-05","weekday":"Sábado","phase":2,"isRest":false,"isSimulado":true,"isExam":false,"area":"Simulado","subtema":"Simulado geral (todas as áreas)","meta_questoes":"100-150 questões (cronometrado)","acao_especial":"Simulado — corrigir na segunda de manhã.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-09-06","weekday":"Domingo","phase":2,"isRest":true,"isSimulado":false,"isExam":false,"area":"Descanso","subtema":"Descanso total","meta_questoes":"-","acao_especial":"Descanso inviolável — 0 estudo.","bloco_manha":"-","bloco_flash":"-"},{"date":"2026-09-07","weekday":"Segunda","phase":3,"isRest":false,"isSimulado":false,"isExam":false,"area":"Cirurgia Geral","subtema":"Hérnias e obstrução intestinal","meta_questoes":"40 questões (foco velocidade)","acao_especial":"MANHÃ: correção do simulado de sábado (gabarito oficial, 2-3h). Bloco da tarde segue normal.","bloco_manha":"Correção do simulado de sábado","bloco_flash":"10-15 questões rápidas: Pediatria"},{"date":"2026-09-08","weekday":"Terça","phase":3,"isRest":false,"isSimulado":false,"isExam":false,"area":"Medicina Preventiva","subtema":"Bioética e ética médica","meta_questoes":"40 questões (foco velocidade)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas de revisão geral"},{"date":"2026-09-09","weekday":"Quarta","phase":3,"isRest":false,"isSimulado":false,"isExam":false,"area":"Pediatria","subtema":"Aleitamento materno e alimentação complementar","meta_questoes":"40 questões (foco velocidade)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Cirurgia Geral"},{"date":"2026-09-10","weekday":"Quinta","phase":3,"isRest":false,"isSimulado":false,"isExam":false,"area":"Ginecologia e Obstetrícia","subtema":"Métodos contraceptivos","meta_questoes":"40 questões (foco velocidade)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Medicina Preventiva + Cirurgia Geral"},{"date":"2026-09-11","weekday":"Sexta","phase":3,"isRest":false,"isSimulado":false,"isExam":false,"area":"Revisão Geral","subtema":"Revisão cruzada dos 5 pontos mais fracos do Caderno de Erros (sem matéria nova)","meta_questoes":"20-30 questões (só revisão, ritmo tranquilo)","acao_especial":"","bloco_manha":"Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)","bloco_flash":"10-15 questões rápidas: Pediatria + Medicina Preventiva"},{"date":"2026-09-12","weekday":"Sábado","phase":3,"isRest":false,"isSimulado":false,"isExam":false,"area":"Reta final","subtema":"Revisão ultra-leve + descanso mental","meta_questoes":"0-20 (opcional)","acao_especial":"SEM simulado novo. Só Anki leve (30-40min) e descanso.","bloco_manha":"Anki leve (30 min)","bloco_flash":"-"},{"date":"2026-09-13","weekday":"Domingo","phase":3,"isRest":false,"isSimulado":false,"isExam":true,"area":"PROVA","subtema":"Dia da prova — Revalida INEP","meta_questoes":"-","acao_especial":"Chegue com 1h de antecedência. Revise só o kit (documento, caneta).","bloco_manha":"-","bloco_flash":"-"}]}
-;
-</script>
-<script>
-const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+// ==========================================
+// CONFIGURAÇÃO DO SUPABASE
+// ==========================================
+const SUPABASE_URL = 'https://hizgqlftbejocvrgugl.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_wx1FRjZJCFt27lAF45dzfQ_OUSWn_BR'; // Subsitua pelo valor que começa com sb_publishable_...
 
-const AREA_META = {
-  "Cirurgia Geral": { hex: "#E2574C", bg: "var(--coral-bg)", fg: "var(--coral)" },
-  "Medicina Preventiva": { hex: "#17A398", bg: "var(--teal-bg)", fg: "var(--teal)" },
-  "Pediatria": { hex: "#F2B134", bg: "var(--gold-bg)", fg: "#8A6414" },
-  "Ginecologia e Obstetrícia": { hex: "#7B5EA7", bg: "var(--violet-bg)", fg: "var(--violet)" },
-  "Clínica Médica": { hex: "#3D6FB4", bg: "var(--blue-bg)", fg: "var(--blue)" },
-  "Descanso": { hex: "#9AA4B8", bg: "var(--gray-bg)", fg: "var(--ink-2)" },
-  "Simulado": { hex: "#16213A", bg: "#E7E9EE", fg: "#16213A" },
-  "Reta final": { hex: "#F2B134", bg: "var(--gold-bg)", fg: "#8A6414" },
-  "Revisão Geral": { hex: "#3D6FB4", bg: "var(--blue-bg)", fg: "var(--blue)" },
-  "PROVA": { hex: "#E2574C", bg: "var(--coral-bg)", fg: "var(--coral)" }
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ID único para sincronizar todos os seus aparelhos
+const USER_DATA_ID = 'meu_progresso_revalida';
+
+// Estado local da aplicação
+let appData = {
+  blocks: {},
+  questoes: 0,
+  acertos: 0
 };
-const REAL_AREAS = ["Cirurgia Geral", "Medicina Preventiva", "Pediatria", "Ginecologia e Obstetrícia", "Clínica Médica"];
 
-let STATE = { logs: {}, blocks: {}, reviews: {} };
+// Elementos da tela
+const inpQ = document.getElementById('inpQ');
+const inpA = document.getElementById('inpA');
+const btnSave = document.getElementById('btnSaveLog');
+const saveMsg = document.getElementById('saveMsg');
+const ringPct = document.getElementById('ringPct');
+const ringSub = document.getElementById('ringSub');
+const ringWrap = document.getElementById('ringWrap');
 
-function pad2(n){ return String(n).padStart(2, "0"); }
-function todayISO(){ const d = new Date(); return d.getFullYear() + "-" + pad2(d.getMonth()+1) + "-" + pad2(d.getDate()); }
-function daysBetween(a, b){ const A = new Date(a+"T00:00:00"), B = new Date(b+"T00:00:00"); return Math.round((B-A)/86400000); }
-function fmtDateBR(iso){ const [y,m,d] = iso.split("-"); return d+"/"+m+"/"+y; }
-function findDay(iso){ return DATA.days.find(function(d){ return d.date === iso; }); }
-function round1(n){ return Math.round(n*10)/10; }
+// Carregar dados ao iniciar
+async function loadData() {
+  try {
+    const { data, error } = await _supabase
+      .from('progresso_estudos')
+      .select('data')
+      .eq('id', USER_DATA_ID)
+      .single();
 
-async function loadState(){
-  try{
-    const r = await window.storage.get("revalida_state", false);
-    if(r && r.value){ return JSON.parse(r.value); }
-  }catch(e){}
-  return { logs: {}, blocks: {}, reviews: {} };
-}
-async function saveState(){
-  try{ await window.storage.set("revalida_state", JSON.stringify(STATE), false); }
-  catch(e){ console.error("Erro ao salvar", e); }
-}
-
-function areaPctFromLogs(area){
-  let q = 0, a = 0;
-  DATA.days.forEach(function(d){
-    if(d.area === area && STATE.logs[d.date] && STATE.logs[d.date].q > 0){
-      q += Number(STATE.logs[d.date].q);
-      a += Number(STATE.logs[d.date].a);
+    if (data && data.data) {
+      appData = data.data;
+      renderState();
     }
-  });
-  if(q === 0) return { pct: DATA.baselinePct[area], logged: false };
-  return { pct: round1((a/q)*100), logged: true };
+  } catch (err) {
+    console.log('Sem dados remotos ainda, iniciando do zero.');
+  }
 }
 
-function computeStreak(){
-  let streak = 0;
-  let cur = new Date(todayISO()+"T00:00:00");
-  const t = todayISO();
-  if(!(STATE.logs[t] && STATE.logs[t].q > 0)){
-    cur.setDate(cur.getDate()-1);
-  }
-  while(true){
-    const iso = cur.getFullYear()+"-"+pad2(cur.getMonth()+1)+"-"+pad2(cur.getDate());
-    const rec = findDay(iso);
-    if(rec && rec.isRest){ cur.setDate(cur.getDate()-1); continue; }
-    if(STATE.logs[iso] && STATE.logs[iso].q > 0){ streak++; cur.setDate(cur.getDate()-1); }
-    else break;
-  }
-  return streak;
-}
+// Salvar dados na nuvem Supabase
+async function saveData() {
+  appData.questoes = parseInt(inpQ.value) || 0;
+  appData.acertos = parseInt(inpA.value) || 0;
 
-function updateSidebar(){
-  const cd = daysBetween(todayISO(), DATA.examDate);
-  document.getElementById("miniCountdown").textContent = cd >= 0 ? cd : "0";
-  document.getElementById("streakNum").textContent = computeStreak();
-  const pendingRem = countPendingReminders();
-  const badge = document.getElementById("remBadge");
-  if(pendingRem > 0){ badge.style.display = "inline-block"; badge.textContent = pendingRem; }
-  else{ badge.style.display = "none"; }
-}
+  renderState();
 
-function countPendingReminders(){
-  const t = todayISO();
-  let count = 0;
-  [7,14,30].forEach(function(offset){
-    const d = new Date(t+"T00:00:00"); d.setDate(d.getDate()-offset);
-    const iso = d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());
-    const rec = findDay(iso);
-    if(rec && REAL_AREAS.indexOf(rec.area) !== -1){
-      const key = t+"_"+offset;
-      if(!STATE.reviews[key]) count++;
-    }
-  });
-  return count;
-}
+  btnSave.innerText = 'Salvando...';
+  
+  const { error } = await _supabase
+    .from('progresso_estudos')
+    .upsert({ id: USER_DATA_ID, data: appData, updated_at: new Date() });
 
-function blockKey(date, idx){ return date+"_b"+idx; }
+  btnSave.innerText = 'Salvar na Nuvem';
 
-function renderHoje(){
-  const el = document.getElementById("view-hoje");
-  const t = todayISO();
-  const rec = findDay(t);
-
-  if(daysBetween(t, DATA.startDate) > 0){
-    el.innerHTML = '<div class="card"><div class="empty-state">'+
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>'+
-      '<div style="font-weight:600; font-size:15px; margin-bottom:4px;">A trilha ainda não começou</div>'+
-      '<div style="font-size:13px;">Começa em '+fmtDateBR(DATA.startDate)+' ('+daysBetween(t, DATA.startDate)+' dias). Dá uma olhada na aba Trilha para ver o plano completo.</div>'+
-      '</div></div>';
-    return;
-  }
-  if(!rec){
-    el.innerHTML = '<div class="card"><div class="empty-state">'+
-      '<div style="font-weight:600; font-size:15px;">Prova concluída</div>'+
-      '<div style="font-size:13px;">O período da trilha (29/07 a 13/09/2026) já passou. Boa prova!</div></div></div>';
-    return;
-  }
-
-  const meta = AREA_META[rec.area] || AREA_META["Descanso"];
-  const isRealArea = REAL_AREAS.indexOf(rec.area) !== -1;
-  const log = STATE.logs[t] || {};
-
-  let blocksHtml = "";
-  if(rec.isExam){
-    blocksHtml = '<div class="block-item"><div class="block-time">Hoje</div><div class="block-text">'+rec.acao_especial+'</div></div>';
-  } else if(rec.isRest){
-    blocksHtml = '<div class="block-item"><div class="block-time">Domingo</div><div class="block-text">Descanso total. Nenhuma tarefa hoje — é parte do plano, não uma falha.</div></div>';
+  if (!error) {
+    saveMsg.classList.add('show');
+    setTimeout(() => saveMsg.classList.remove('show'), 2000);
   } else {
-    const items = [
-      { time: "10h00", text: rec.bloco_manha },
-      { time: "11h-17h", text: "<b>"+rec.area+"</b> — "+rec.subtema+". Meta: "+rec.meta_questoes },
-      { time: "17h-18h30", text: "Alimentar Caderno de Erros + criar flashcards novos no Anki" },
-      { time: "18h30-19h15", text: rec.bloco_flash }
-    ];
-    blocksHtml = items.map(function(it, idx){
-      const bk = blockKey(t, idx);
-      const done = !!STATE.blocks[bk];
-      return '<div class="block-item"><div class="block-time">'+it.time+'</div>'+
-        '<button class="block-check'+(done?' done':'')+'" data-blockkey="'+bk+'" aria-label="Marcar bloco concluído">'+CHECK_SVG+'</button>'+
-        '<div class="block-text">'+it.text+'</div></div>';
-    }).join("");
+    alert('Erro ao salvar na nuvem! Verifique se copiou a chave Publishable corretamente.');
   }
-
-  const specialHtml = rec.acao_especial && !rec.isExam ? '<div class="special-banner">'+rec.acao_especial+'</div>' : "";
-
-  const ringPct = log.q > 0 ? Math.round((log.a/log.q)*100) : null;
-  const ringHtml = ringPct === null ?
-    '<div class="ring-num"><div class="n mono">--</div><div class="l">ainda não registrado</div></div>' :
-    '<div class="ring-num"><div class="n mono">'+ringPct+'%</div><div class="l">'+log.a+'/'+log.q+' questões</div></div>';
-  const ringColor = ringPct === null ? "#D2D8E4" : (ringPct >= 70 ? "#17A398" : ringPct >= 50 ? "#F2B134" : "#E2574C");
-  const ringDeg = ringPct === null ? 0 : Math.round(ringPct*3.6);
-
-  el.innerHTML =
-    '<div class="grid2">'+
-      '<div class="card lesson-card">'+
-        '<span class="lesson-phase-tag" style="background:'+meta.bg+'; color:'+meta.fg+';">Fase '+rec.phase+' · '+rec.weekday+'</span>'+
-        '<div class="lesson-title">'+rec.area+'</div>'+
-        '<div class="lesson-sub">'+rec.subtema+'</div>'+
-        specialHtml+
-        '<div class="block-list">'+blocksHtml+'</div>'+
-        (isRealArea || rec.isSimulado ? (
-        '<div class="log-box">'+
-          '<div class="log-row">'+
-            '<div class="field"><label>Questões feitas</label><input type="number" min="0" id="inpQ" value="'+(log.q||"")+'"></div>'+
-            '<div class="field"><label>Acertos</label><input type="number" min="0" id="inpA" value="'+(log.a||"")+'"></div>'+
-            '<button class="btn btn-primary" id="btnSaveLog">Salvar</button>'+
-            '<span class="save-msg" id="saveMsg">Salvo</span>'+
-          '</div>'+
-        '</div>') : "") +
-      '</div>'+
-      '<div class="card ring-card">'+
-        '<div class="ring-wrap" style="background:conic-gradient('+ringColor+' '+ringDeg+'deg, #EAEDF3 0deg);">'+
-          '<div style="position:absolute; inset:8px; border-radius:50%; background:#fff;"></div>'+ringHtml+
-        '</div>'+
-        '<div style="font-size:12.5px; color:var(--ink-2); margin-top:4px;">Rendimento de hoje</div>'+
-      '</div>'+
-    '</div>';
-
-  const btnSave = document.getElementById("btnSaveLog");
-  if(btnSave){
-    btnSave.addEventListener("click", async function(){
-      const q = Number(document.getElementById("inpQ").value) || 0;
-      const a = Number(document.getElementById("inpA").value) || 0;
-      STATE.logs[t] = { q: q, a: a };
-      await saveState();
-      document.getElementById("saveMsg").classList.add("show");
-      setTimeout(function(){ document.getElementById("saveMsg").classList.remove("show"); }, 1800);
-      updateSidebar();
-      renderHoje();
-    });
-  }
-  el.querySelectorAll(".block-check").forEach(function(btn){
-    btn.addEventListener("click", async function(){
-      const bk = btn.getAttribute("data-blockkey");
-      STATE.blocks[bk] = !STATE.blocks[bk];
-      await saveState();
-      renderHoje();
-    });
-  });
 }
 
-function renderTrilha(){
-  const el = document.getElementById("view-trilha");
-  const legendAreas = REAL_AREAS.concat(["Simulado", "Descanso"]);
-  const legendHtml = legendAreas.map(function(a){
-    return '<div class="legend-item"><span class="legend-dot" style="background:'+AREA_META[a].hex+';"></span>'+a+'</div>';
-  }).join("");
+// Atualizar interface gráfica
+function renderState() {
+  inpQ.value = appData.questoes || '';
+  inpA.value = appData.acertos || '';
 
-  const cols = 7;
-  const rowH = 92;
-  const marginX = 46, marginTop = 40;
-  const vbWidth = 780;
-  const spacing = (vbWidth - 2*marginX) / (cols - 1);
-  const rows = Math.ceil(DATA.days.length / cols);
-  const vbHeight = marginTop*2 + (rows-1)*rowH + 20;
-
-  const t = todayISO();
-  let pathPts = [];
-  let nodesHtml = "";
-
-  DATA.days.forEach(function(rec, i){
-    const row = Math.floor(i / cols);
-    const idxInRow = i % cols;
-    const rowLen = Math.min(cols, DATA.days.length - row*cols);
-    let x;
-    if(row % 2 === 0){ x = marginX + idxInRow * spacing; }
-    else { x = marginX + (rowLen - 1 - idxInRow) * spacing; }
-    const y = marginTop + row * rowH;
-    pathPts.push(x+","+y);
-
-    const meta = AREA_META[rec.area] || AREA_META["Descanso"];
-    const isToday = rec.date === t;
-    const logged = STATE.logs[rec.date] && STATE.logs[rec.date].q > 0;
-    const r = rec.isExam ? 22 : 17;
-    nodesHtml += '<g class="trilha-node" data-date="'+rec.date+'" style="cursor:pointer;">'+
-      (isToday ? '<circle cx="'+x+'" cy="'+y+'" r="'+(r+7)+'" fill="none" stroke="'+meta.hex+'" stroke-width="2" stroke-dasharray="3 3"/>' : '')+
-      '<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+meta.hex+'" opacity="'+(rec.isRest ? 0.55 : 1)+'"/>'+
-      (logged ? '<circle cx="'+(x+r*0.68)+'" cy="'+(y-r*0.68)+'" r="7" fill="#fff" stroke="'+meta.hex+'" stroke-width="1.5"/><text x="'+(x+r*0.68)+'" y="'+(y-r*0.68+3)+'" text-anchor="middle" font-size="9" fill="'+meta.hex+'" font-weight="700">✓</text>' : '')+
-      '<text x="'+x+'" y="'+(y+3)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="IBM Plex Mono, monospace">'+(i+1)+'</text>'+
-      '<title>'+fmtDateBR(rec.date)+' · '+rec.area+'</title>'+
-    '</g>';
-  });
-
-  const pathD = "M" + pathPts.join(" L");
-
-  el.innerHTML =
-    '<div class="trilha-legend">'+legendHtml+'</div>'+
-    '<div class="trilha-wrap">'+
-      '<svg viewBox="0 0 '+vbWidth+' '+vbHeight+'" style="width:100%; height:auto; min-width:640px;" role="img" aria-label="Trilha de 47 dias de estudo até a prova">'+
-        '<path d="'+pathD+'" fill="none" stroke="#D2D8E4" stroke-width="3"/>'+
-        nodesHtml+
-      '</svg>'+
-    '</div>';
-
-  el.querySelector(".trilha-wrap").addEventListener("click", function(e){
-    const g = e.target.closest("[data-date]");
-    if(g){ openDayModal(g.getAttribute("data-date")); }
-  });
-}
-
-function openDayModal(iso){
-  const rec = findDay(iso);
-  if(!rec) return;
-  const meta = AREA_META[rec.area] || AREA_META["Descanso"];
-  const isRealArea = REAL_AREAS.indexOf(rec.area) !== -1;
-  const log = STATE.logs[iso] || {};
-  const modal = document.getElementById("modalContent");
-  modal.innerHTML =
-    '<button class="modal-close" id="modalCloseBtn" aria-label="Fechar">&times;</button>'+
-    '<span class="lesson-phase-tag" style="background:'+meta.bg+'; color:'+meta.fg+';">Fase '+rec.phase+' · '+fmtDateBR(rec.date)+' · '+rec.weekday+'</span>'+
-    '<div class="lesson-title">'+rec.area+'</div>'+
-    '<div class="lesson-sub">'+rec.subtema+'</div>'+
-    (rec.acao_especial ? '<div class="special-banner">'+rec.acao_especial+'</div>' : '')+
-    (rec.bloco_manha && rec.bloco_manha !== "-" ? '<div style="font-size:13px; margin-top:14px;"><b>10h:</b> '+rec.bloco_manha+'</div>' : '')+
-    (rec.meta_questoes && rec.meta_questoes !== "-" ? '<div style="font-size:13px; margin-top:8px;"><b>Meta de questões:</b> '+rec.meta_questoes+'</div>' : '')+
-    (rec.bloco_flash && rec.bloco_flash !== "-" ? '<div style="font-size:13px; margin-top:8px;"><b>18h30:</b> '+rec.bloco_flash+'</div>' : '')+
-    ((isRealArea || rec.isSimulado) ?
-      '<div class="log-box"><div class="log-row">'+
-        '<div class="field"><label>Questões feitas</label><input type="number" min="0" id="modalQ" value="'+(log.q||"")+'"></div>'+
-        '<div class="field"><label>Acertos</label><input type="number" min="0" id="modalA" value="'+(log.a||"")+'"></div>'+
-        '<button class="btn btn-primary" id="modalSave">Salvar</button>'+
-        '<span class="save-msg" id="modalSaveMsg">Salvo</span>'+
-      '</div></div>' : "");
-
-  document.getElementById("modalCloseBtn").addEventListener("click", closeModal);
-  const saveBtn = document.getElementById("modalSave");
-  if(saveBtn){
-    saveBtn.addEventListener("click", async function(){
-      const q = Number(document.getElementById("modalQ").value) || 0;
-      const a = Number(document.getElementById("modalA").value) || 0;
-      STATE.logs[iso] = { q: q, a: a };
-      await saveState();
-      document.getElementById("modalSaveMsg").classList.add("show");
-      updateSidebar();
-      renderTrilha();
-      renderStats();
-    });
-  }
-  document.getElementById("modalOverlay").classList.add("open");
-}
-function closeModal(){ document.getElementById("modalOverlay").classList.remove("open"); }
-
-let trendChart = null;
-function renderStats(){
-  const el = document.getElementById("view-stats");
-  let totalQ = 0, totalA = 0, diasConcluidos = 0;
-  DATA.days.forEach(function(d){
-    const log = STATE.logs[d.date];
-    if(log && log.q > 0){ totalQ += Number(log.q); totalA += Number(log.a); diasConcluidos++; }
-  });
-  const rendGeral = totalQ > 0 ? round1((totalA/totalQ)*100) : 0;
-  const streak = computeStreak();
-
-  const kpiHtml =
-    '<div class="kpi-grid">'+
-      '<div class="kpi"><div class="v mono">'+diasConcluidos+'/47</div><div class="l">dias registrados</div></div>'+
-      '<div class="kpi"><div class="v mono">'+totalQ+'</div><div class="l">questões respondidas</div></div>'+
-      '<div class="kpi"><div class="v mono">'+(totalQ>0?rendGeral+"%":"--")+'</div><div class="l">rendimento geral no período</div></div>'+
-      '<div class="kpi"><div class="v mono">'+streak+'</div><div class="l">dias seguidos de sequência</div></div>'+
-    '</div>';
-
-  const areaRows = REAL_AREAS.map(function(area){
-    const r = areaPctFromLogs(area);
-    const target = DATA.metaTarget[area];
-    const targetPctMid = ((target[0]+target[1])/2/20)*100;
-    const targetPctMin = (target[0]/20)*100;
-    const meta = AREA_META[area];
-    const onTarget = r.pct >= targetPctMin;
-    return '<div class="stat-row">'+
-      '<div class="stat-area-name">'+area+'</div>'+
-      '<div class="stat-bar-wrap">'+
-        '<div class="stat-bar-fill" style="width:'+Math.min(r.pct,100)+'%; background:'+meta.hex+';"></div>'+
-        '<div class="stat-meta-mark" style="left:'+targetPctMid+'%;"></div>'+
-      '</div>'+
-      '<div class="stat-pct">'+r.pct+'%</div>'+
-      '<div class="status-pill" style="background:'+(onTarget?'var(--teal-bg)':'var(--coral-bg)')+'; color:'+(onTarget?'var(--teal)':'var(--coral)')+';">'+(onTarget?'Na meta':'Abaixo')+'</div>'+
-    '</div>';
-  }).join("");
-
-  el.innerHTML =
-    kpiHtml+
-    '<div class="card">'+
-      '<div class="section-title">Progresso por área (meta = traço vertical)</div>'+
-      areaRows+
-    '</div>'+
-    '<div class="card subsection">'+
-      '<div class="section-title">Evolução do rendimento</div>'+
-      '<div style="position:relative; width:100%; height:260px;">'+
-        '<canvas id="trendCanvas" role="img" aria-label="Gráfico de evolução do rendimento em simulados e dias de estudo registrados"></canvas>'+
-      '</div>'+
-    '</div>';
-
-  const labels = DATA.simuladosHistorico.map(function(s){ return s.label; });
-  const values = DATA.simuladosHistorico.map(function(s){ return s.pct; });
-  DATA.days.forEach(function(d){
-    const log = STATE.logs[d.date];
-    if(log && log.q > 0){
-      labels.push(fmtDateBR(d.date));
-      values.push(round1((log.a/log.q)*100));
+  // Atualizar blocos (checkmarks)
+  document.querySelectorAll('.block-check').forEach(btn => {
+    const key = btn.dataset.blockkey;
+    if (appData.blocks && appData.blocks[key]) {
+      btn.classList.add('done');
+    } else {
+      btn.classList.remove('done');
     }
   });
 
-  if(trendChart){ trendChart.destroy(); }
-  const ctx = document.getElementById("trendCanvas");
-  trendChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Rendimento (%)",
-        data: values,
-        borderColor: "#3D6FB4",
-        backgroundColor: "rgba(61,111,180,0.08)",
-        borderWidth: 2,
-        pointRadius: 4,
-        pointBackgroundColor: "#3D6FB4",
-        fill: true,
-        tension: 0.25
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { min: 0, max: 100, ticks: { callback: function(v){ return v+"%"; } }, grid: { color: "#E3E7EF" } },
-        x: { grid: { display: false }, ticks: { maxRotation: 45, autoSkip: labels.length > 12 } }
-      }
-    }
-  });
+  // Atualizar Rosca de Rendimento
+  if (appData.questoes > 0) {
+    const pct = Math.round((appData.acertos / appData.questoes) * 100);
+    ringPct.innerText = `${pct}%`;
+    ringSub.innerText = `${appData.acertos} / ${appData.questoes}`;
+    const deg = Math.round((pct / 100) * 360);
+    ringWrap.style.background = `conic-gradient(#17A398 ${deg}deg, #EAEDF3 ${deg}deg)`;
+  } else {
+    ringPct.innerText = '--%';
+    ringSub.innerText = 'não registrado';
+    ringWrap.style.background = `conic-gradient(#D2D8E4 0deg, #EAEDF3 0deg)`;
+  }
 }
 
-function renderRevisoes(){
-  const el = document.getElementById("view-revisoes");
-  const t = todayISO();
-  const offsets = [7, 14, 30];
-  let itemsHtml = "";
-  let anyFound = false;
-
-  offsets.forEach(function(offset){
-    const d = new Date(t+"T00:00:00"); d.setDate(d.getDate()-offset);
-    const iso = d.getFullYear()+"-"+pad2(d.getMonth()+1)+"-"+pad2(d.getDate());
-    const rec = findDay(iso);
-    if(rec && REAL_AREAS.indexOf(rec.area) !== -1){
-      anyFound = true;
-      const key = t+"_"+offset;
-      const done = !!STATE.reviews[key];
-      const meta = AREA_META[rec.area];
-      itemsHtml += '<div class="rem-item">'+
-        '<button class="rem-check'+(done?' done':'')+'" data-key="'+key+'" aria-label="Marcar revisão feita">'+CHECK_SVG+'</button>'+
-        '<span class="rem-badge" style="background:'+meta.bg+'; color:'+meta.fg+';">há '+offset+' dias</span>'+
-        '<div style="font-size:13.5px; flex:1;"><b>'+rec.area+'</b> — '+rec.subtema+'<div style="color:var(--ink-2); font-size:12px; margin-top:2px;">Estudado em '+fmtDateBR(iso)+'</div></div>'+
-      '</div>';
-    }
+// Event Listeners
+document.querySelectorAll('.block-check').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const key = btn.dataset.blockkey;
+    if (!appData.blocks) appData.blocks = {};
+    appData.blocks[key] = !appData.blocks[key];
+    renderState();
+    saveData();
   });
+});
 
-  el.innerHTML = '<div class="card">'+
-    '<div class="section-title">Revisão espaçada de hoje (7 / 14 / 30 dias)</div>'+
-    (anyFound ? itemsHtml : '<div class="empty-state"><div style="font-size:13.5px;">Nenhuma revisão programada ainda — isso passa a aparecer a partir do 8º dia de trilha.</div></div>')+
-  '</div>';
+btnSave.addEventListener('click', saveData);
 
-  el.querySelectorAll(".rem-check").forEach(function(btn){
-    btn.addEventListener("click", async function(){
-      const key = btn.getAttribute("data-key");
-      STATE.reviews[key] = !STATE.reviews[key];
-      await saveState();
-      renderRevisoes();
-      updateSidebar();
-    });
-  });
-}
-
-function switchView(name){
-  document.querySelectorAll(".view").forEach(function(v){ v.classList.remove("active"); });
-  document.getElementById("view-"+name).classList.add("active");
-  document.querySelectorAll(".nav-item").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-view") === name); });
-  const titles = { hoje: "Hoje", trilha: "Trilha de 47 dias", stats: "Estatísticas", revisoes: "Revisões" };
-  document.getElementById("topTitle").textContent = titles[name];
-  if(name === "stats") renderStats();
-}
-
-async function init(){
-  STATE = await loadState();
-  const t = todayISO();
-  const rec = findDay(t);
-  document.getElementById("topDate").textContent = fmtDateBR(t) + (rec ? " · " + rec.weekday : "");
-  updateSidebar();
-  renderHoje();
-  renderTrilha();
-  renderStats();
-  renderRevisoes();
-
-  document.querySelectorAll(".nav-item").forEach(function(btn){
-    btn.addEventListener("click", function(){ switchView(btn.getAttribute("data-view")); });
-  });
-  document.getElementById("modalOverlay").addEventListener("click", function(e){
-    if(e.target.id === "modalOverlay") closeModal();
-  });
-}
-
-document.addEventListener("DOMContentLoaded", init);
-
+// Inicializar na abertura
+loadData();
 </script>
-
-
-</body></html>
+</body>
+</html>
