@@ -30,17 +30,18 @@ button{ font-family:inherit; cursor:pointer; }
 
 .app{ display:flex; min-height:100vh; }
 
-.sidebar{ width:248px; flex-shrink:0; background:var(--sidebar); color:var(--sidebar-text);
-  display:flex; flex-direction:column; padding:22px 16px; position:sticky; top:0; height:100vh; }
+.sidebar{ width:260px; flex-shrink:0; background:var(--sidebar); color:var(--sidebar-text);
+  display:flex; flex-direction:column; padding:22px 16px; position:sticky; top:0; height:100vh; overflow-y:auto; }
 .brand{ display:flex; align-items:center; gap:10px; padding:6px 8px 22px; }
 .brand-mark{ width:34px; height:34px; border-radius:9px; background:var(--teal); display:flex; align-items:center; justify-content:center; }
 .brand-name{ font-family:'Sora',sans-serif; font-weight:700; font-size:14.5px; color:#fff; }
 .brand-sub{ font-size:11px; color:var(--sidebar-text-dim); }
 
-.nav{ display:flex; flex-direction:column; gap:2px; margin-top:6px; }
+.nav{ display:flex; flex-direction:column; gap:4px; margin-top:6px; }
+.nav-section-title{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.8px; color:var(--sidebar-text-dim); padding:12px 12px 4px; font-weight:700; }
 .nav-item{ display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px;
   color:var(--sidebar-text); background:transparent; border:none; text-align:left; font-size:13.5px; font-weight:500; width:100%; }
-.nav-item svg{ width:18px; height:18px; }
+.nav-item svg{ width:18px; height:18px; flex-shrink:0; }
 .nav-item:hover{ background:rgba(255,255,255,0.06); }
 .nav-item.active{ background:var(--sidebar-2); color:#fff; }
 
@@ -58,7 +59,7 @@ button{ font-family:inherit; cursor:pointer; }
 .block-item{ display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line); align-items:center; }
 .block-item:first-child{ border-top:none; }
 .block-time{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-3); width:78px; flex-shrink:0; }
-.block-check{ width:22px; height:22px; border-radius:6px; border:1.5px solid var(--line-2); background:#fff; cursor:pointer; }
+.block-check{ width:22px; height:22px; border-radius:6px; border:1.5px solid var(--line-2); background:#fff; cursor:pointer; flex-shrink:0; }
 .block-check.done{ background:var(--teal); border-color:var(--teal); position:relative; }
 .block-check.done::after{ content:'✓'; color:#fff; display:block; text-align:center; font-size:12px; line-height:20px; }
 
@@ -74,6 +75,7 @@ button{ font-family:inherit; cursor:pointer; }
 <body>
 <div class="app">
 
+  <!-- BARRA LATERAL COMPLETA -->
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-mark">
@@ -86,18 +88,21 @@ button{ font-family:inherit; cursor:pointer; }
     </div>
 
     <nav class="nav">
+      <div class="nav-section-title">Principal</div>
       <button class="nav-item active" onclick="switchTab('hoje', event)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         <span>Hoje</span>
       </button>
       <button class="nav-item" onclick="switchTab('trilha', event)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-        <span>Trilha</span>
+        <span>Trilha de Estudos</span>
       </button>
       <button class="nav-item" onclick="switchTab('revisoes', event)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
-        <span>Revisões</span>
+        <span>Revisões Espaçadas</span>
       </button>
+
+      <div class="nav-section-title">Desempenho</div>
       <button class="nav-item" onclick="switchTab('estatisticas', event)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
         <span>Estatísticas</span>
@@ -106,6 +111,7 @@ button{ font-family:inherit; cursor:pointer; }
   </aside>
 
   <main class="main">
+    <!-- HOJE -->
     <section class="view active" id="view-hoje">
       <div class="topbar"><h1>Hoje</h1></div>
       <div class="grid2">
@@ -146,6 +152,7 @@ button{ font-family:inherit; cursor:pointer; }
       </div>
     </section>
 
+    <!-- TRILHA -->
     <section class="view" id="view-trilha">
       <div class="topbar"><h1>Trilha de Estudos</h1></div>
       <div class="card">
@@ -175,6 +182,7 @@ button{ font-family:inherit; cursor:pointer; }
       </div>
     </section>
 
+    <!-- REVISÕES -->
     <section class="view" id="view-revisoes">
       <div class="topbar"><h1>Ciclos de Revisão Espaçada</h1></div>
       <div class="grid3">
@@ -205,6 +213,7 @@ button{ font-family:inherit; cursor:pointer; }
       </div>
     </section>
 
+    <!-- ESTATÍSTICAS -->
     <section class="view" id="view-estatisticas">
       <div class="topbar"><h1>Estatísticas do Aluno</h1></div>
       <div class="grid2">
@@ -227,16 +236,13 @@ button{ font-family:inherit; cursor:pointer; }
 
 <script>
 const SUPABASE_URL = 'https://hizcqlftbejocvrgugl.supabase.co';
-// Substitua o texto abaixo se a sua chave 'anon' for diferente no painel do Supabase
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpemNxbGZ0YmVqb2N2cmd1Z2wiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczODE0NjIxOCwiZXhwIjoyMDUzNzIyMjE4fQ.J-JN0ub1FAmjW72zhTSwie9UgHHIoagcRfARPURJBys';
 
 let _supabase;
 const USER_DATA_ID = 'meu_progresso_revalida';
 let appData = { blocks: {}, questoes: 0, acertos: 0 };
 
-
 function initApp() {
-  // 1. Carrega primeiro do LocalStorage (funciona 100% offline/local sem dar erro)
   const localSaved = localStorage.getItem('revalida_app_data');
   if (localSaved) {
     try {
@@ -245,7 +251,6 @@ function initApp() {
     } catch(e){}
   }
 
-  // 2. Conecta ao Supabase para sincronização em nuvem silenciosa
   if (window.supabase) {
     try {
       _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -279,11 +284,9 @@ async function saveData() {
   appData.questoes = parseInt(document.getElementById('inpQ').value) || 0;
   appData.acertos = parseInt(document.getElementById('inpA').value) || 0;
 
-  // Salva imediatamente localmente
   localStorage.setItem('revalida_app_data', JSON.stringify(appData));
   renderState();
 
-  // Tenta sincronizar na nuvem
   if (_supabase) {
     try {
       const { error } = await _supabase
