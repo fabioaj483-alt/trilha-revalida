@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trilha Revalida — Painel de Estudos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/">
-<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
   --sidebar:#12213B; --sidebar-2:#182A48; --sidebar-text:#AEC0DA; --sidebar-text-dim:#6E80A0;
-  --bg:#F2F4F8; --card:#FFFFFF; --card-2:#F8F9FC;
+  --bg:#F2F4F8; --card:#FFFFFF;
   --ink:#16213A; --ink-2:#5B6B85; --ink-3:#8E99AE;
   --line:#E3E7EF; --line-2:#D2D8E4;
   --teal:#17A398; --teal-bg:#DFF3F1;
   --coral:#E2574C; --coral-bg:#FBE2E0;
-  --gold:#F2B134; --gold-bg:#FCEDD1;
   --shadow: 0 1px 2px rgba(18,33,59,0.04), 0 8px 24px rgba(18,33,59,0.06);
   --radius: 14px;
   font-family: 'Inter', sans-serif;
@@ -95,7 +93,7 @@ button{ font-family:inherit; cursor:pointer; }
         <span>Trilha</span>
       </button>
       <button class="nav-item" onclick="switchTab('revisoes', event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         <span>Revisões</span>
       </button>
       <button class="nav-item" onclick="switchTab('estatisticas', event)">
@@ -106,7 +104,7 @@ button{ font-family:inherit; cursor:pointer; }
   </aside>
 
   <main class="main">
-    <!-- ABA HOJE -->
+    <!-- HOJE -->
     <section class="view active" id="view-hoje">
       <div class="topbar"><h1>Hoje</h1></div>
       <div class="grid2">
@@ -147,7 +145,7 @@ button{ font-family:inherit; cursor:pointer; }
       </div>
     </section>
 
-    <!-- ABA TRILHA -->
+    <!-- TRILHA -->
     <section class="view" id="view-trilha">
       <div class="topbar"><h1>Trilha de Estudos</h1></div>
       <div class="card">
@@ -177,7 +175,7 @@ button{ font-family:inherit; cursor:pointer; }
       </div>
     </section>
 
-    <!-- ABA REVISÕES -->
+    <!-- REVISÕES -->
     <section class="view" id="view-revisoes">
       <div class="topbar"><h1>Ciclos de Revisão Espaçada</h1></div>
       <div class="grid3">
@@ -208,7 +206,7 @@ button{ font-family:inherit; cursor:pointer; }
       </div>
     </section>
 
-    <!-- ABA ESTATÍSTICAS -->
+    <!-- ESTATÍSTICAS -->
     <section class="view" id="view-estatisticas">
       <div class="topbar"><h1>Estatísticas do Aluno</h1></div>
       <div class="grid2">
@@ -240,7 +238,7 @@ let appData = { blocks: {}, questoes: 0, acertos: 0 };
 
 async function loadData() {
   try {
-    const { data, error } = await _supabase
+    const { data } = await _supabase
       .from('progresso_estudos')
       .select('data')
       .eq('id', USER_DATA_ID)
