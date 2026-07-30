@@ -1,210 +1,6 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trilha Revalida — Painel de Estudos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com/">
-<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
-
-<!-- Supabase SDK JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<style>
-:root{
-  --sidebar:#12213B; --sidebar-2:#182A48; --sidebar-text:#AEC0DA; --sidebar-text-dim:#6E80A0;
-  --bg:#F2F4F8; --card:#FFFFFF; --card-2:#F8F9FC;
-  --ink:#16213A; --ink-2:#5B6B85; --ink-3:#8E99AE;
-  --line:#E3E7EF; --line-2:#D2D8E4;
-  --teal:#17A398; --teal-bg:#DFF3F1;
-  --coral:#E2574C; --coral-bg:#FBE2E0;
-  --gold:#F2B134; --gold-bg:#FCEDD1;
-  --violet:#7B5EA7; --violet-bg:#EBE4F3;
-  --blue:#3D6FB4; --blue-bg:#E1EAF6;
-  --gray:#9AA4B8; --gray-bg:#EAEDF3;
-  --shadow: 0 1px 2px rgba(18,33,59,0.04), 0 8px 24px rgba(18,33,59,0.06);
-  --radius: 14px;
-  font-family: 'Inter', sans-serif;
-}
-*{box-sizing:border-box; margin:0; padding:0;}
-body{ background:var(--bg); color:var(--ink); min-height:100vh; }
-h1,h2,h3,.disp{ font-family:'Sora', sans-serif; }
-.mono{ font-family:'IBM Plex Mono', monospace; }
-button{ font-family:inherit; cursor:pointer; }
-
-.app{ display:flex; min-height:100vh; }
-
-/* Sidebar */
-.sidebar{ width:248px; flex-shrink:0; background:var(--sidebar); color:var(--sidebar-text);
-  display:flex; flex-direction:column; padding:22px 16px; position:sticky; top:0; height:100vh; }
-.brand{ display:flex; align-items:center; gap:10px; padding:6px 8px 22px; }
-.brand-mark{ width:34px; height:34px; border-radius:9px; background:var(--teal);
-  display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.brand-mark svg{ width:18px; height:18px; }
-.brand-name{ font-family:'Sora',sans-serif; font-weight:700; font-size:14.5px; color:#fff; line-height:1.15; }
-.brand-sub{ font-size:11px; color:var(--sidebar-text-dim); letter-spacing:.04em; }
-
-.nav{ display:flex; flex-direction:column; gap:2px; margin-top:6px; }
-.nav-item{ display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px;
-  color:var(--sidebar-text); background:transparent; border:none; text-align:left; font-size:13.5px; font-weight:500;
-  width:100%; transition:background .15s; }
-.nav-item svg{ width:18px; height:18px; flex-shrink:0; opacity:.85; }
-.nav-item:hover{ background:rgba(255,255,255,0.06); }
-.nav-item.active{ background:var(--sidebar-2); color:#fff; }
-
-.sidebar-bottom{ margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08); }
-.streak-box{ background:var(--sidebar-2); border-radius:12px; padding:12px 13px; display:flex; align-items:center; gap:10px; }
-.streak-num{ font-family:'Sora',sans-serif; font-weight:700; font-size:19px; color:#fff; }
-.streak-label{ font-size:10.5px; color:var(--sidebar-text-dim); line-height:1.3; }
-
-/* Main */
-.main{ flex:1; min-width:0; padding:26px 34px 60px; }
-.topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
-.topbar h1{ font-size:21px; font-weight:600; }
-
-.view{ display:none; }
-.view.active{ display:block; }
-
-.card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow); }
-.grid2{ display:grid; grid-template-columns:1.4fr 1fr; gap:16px; align-items:start; }
-
-.lesson-title{ font-size:19px; font-weight:600; margin:12px 0 4px; }
-.lesson-sub{ font-size:13.5px; color:var(--ink-2); margin-bottom:16px; }
-.block-item{ display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
-.block-item:first-child{ border-top:none; }
-.block-time{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-3); width:78px; flex-shrink:0; }
-.block-check{ width:20px; height:20px; border-radius:6px; border:1.5px solid var(--line-2); flex-shrink:0; background:#fff; cursor:pointer; }
-.block-check.done{ background:var(--teal); border-color:var(--teal); }
-
-.log-box{ margin-top:18px; padding-top:16px; border-top:1px dashed var(--line-2); }
-.log-row{ display:flex; gap:10px; align-items:flex-end; }
-.field{ display:flex; flex-direction:column; gap:4px; }
-.field input{ width:88px; height:36px; border-radius:9px; border:1px solid var(--line-2); padding:0 10px; font-family:'IBM Plex Mono',monospace; }
-.btn{ height:36px; padding:0 16px; border-radius:9px; border:none; background:var(--ink); color:#fff; font-weight:600; cursor:pointer; }
-
-.ring-card{ display:flex; flex-direction:column; align-items:center; text-align:center; }
-.ring-wrap{ position:relative; width:132px; height:132px; border-radius:50%; }
-.ring-num{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-</style>
-</head>
-<body>
-<div class="app">
-
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-      </div>
-      <div>
-        <div class="brand-name">Trilha Revalida</div>
-        <div class="brand-sub">INEP · turma única</div>
-      </div>
-    </div>
-
-    <!-- NAVEGAÇÃO LATERAL RESTAURADA -->
-    <nav class="nav">
-      <button class="nav-item active" onclick="switchTab('hoje')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-        <span>Hoje</span>
-      </button>
-      <button class="nav-item" onclick="switchTab('trilha')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-        <span>Trilha</span>
-      </button>
-      <button class="nav-item" onclick="switchTab('revisoes')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        <span>Revisões</span>
-      </button>
-      <button class="nav-item" onclick="switchTab('estatisticas')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-        <span>Estatísticas</span>
-      </button>
-    </nav>
-
-    <div class="sidebar-bottom">
-      <div class="streak-box">
-        <div style="font-size:20px;">🔥</div>
-        <div>
-          <div class="streak-num" id="streakNum">0</div>
-          <div class="streak-label">dias seguidos</div>
-        </div>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main">
-    <!-- ABA HOJE -->
-    <section class="view active" id="view-hoje">
-      <div class="topbar">
-        <h1>Hoje</h1>
-      </div>
-      <div class="grid2">
-        <div class="card">
-          <div class="lesson-title">Cirurgia Geral</div>
-          <div class="lesson-sub">ATLS - ABCDE do trauma + pneumotórax hipertensivo</div>
-          
-          <div class="block-item">
-            <div class="block-time">10h00</div>
-            <button class="block-check" data-blockkey="b0" onclick="toggleBlock('b0')"></button>
-            <div>Anki (30-40min) + 15-20 questões Caderno de Erros</div>
-          </div>
-          <div class="block-item">
-            <div class="block-time">11h-17h</div>
-            <button class="block-check" data-blockkey="b1" onclick="toggleBlock('b1')"></button>
-            <div><b>Cirurgia Geral</b> — Meta: 30-40 questões x2 blocos</div>
-          </div>
-
-          <div class="log-box">
-            <div class="log-row">
-              <div class="field">
-                <label>Questões feitas</label>
-                <input type="number" min="0" id="inpQ">
-              </div>
-              <div class="field">
-                <label>Acertos</label>
-                <input type="number" min="0" id="inpA">
-              </div>
-              <button class="btn" id="btnSaveLog" onclick="saveData()">Salvar na Nuvem</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card ring-card">
-          <div class="ring-wrap" id="ringWrap" style="background:conic-gradient(#D2D8E4 0deg, #EAEDF3 0deg);">
-            <div style="position:absolute; inset:8px; border-radius:50%; background:#fff;"></div>
-            <div class="ring-num">
-              <div class="n mono" id="ringPct" style="font-weight:700; font-size:24px;">--%</div>
-              <div id="ringSub" style="font-size:10px; color:var(--ink-2);">não registrado</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABA TRILHA -->
-    <section class="view" id="view-trilha">
-      <div class="topbar"><h1>Trilha Completa</h1></div>
-      <div class="card"><p>Cronograma de tópicos e programação semanal.</p></div>
-    </section>
-
-    <!-- ABA REVISÕES -->
-    <section class="view" id="view-revisoes">
-      <div class="topbar"><h1>Revisões Espaçadas</h1></div>
-      <div class="card"><p>Controle de ciclos R1, R2 e R3.</p></div>
-    </section>
-
-    <!-- ABA ESTATÍSTICAS -->
-    <section class="view" id="view-estatisticas">
-      <div class="topbar"><h1>Estatísticas e Desempenho</h1></div>
-      <div class="card"><p>Acompanhamento de porcentagens e rendimento geral.</p></div>
-    </section>
-  </main>
-</div>
-
 <script>
 const SUPABASE_URL = 'https://hizgqlftbejocvrgugl.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpemNxbGZsdGJlam9jdnJndWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzODAyMTgsImV4cCI6MjEwMDk1NjIxOH0.J-JN0ublFAmjW72zhTSwie9UgHHIoagcRfARPURJBys';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpemdxbGZ0YmVqb2N2cmd1Z2wiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczODE0NjIxOCwiZXhwIjoyMDUzNzIyMjE4fQ.J-JN0ub1FAmjW72zhTSwie9UgHHIoagcRfARPURJBys';
 
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const USER_DATA_ID = 'meu_progresso_revalida';
@@ -213,12 +9,19 @@ let appData = { blocks: {}, questoes: 0, acertos: 0 };
 
 async function loadData() {
   try {
-    const { data } = await _supabase.from('progresso_estudos').select('data').eq('id', USER_DATA_ID).single();
+    const { data, error } = await _supabase
+      .from('progresso_estudos')
+      .select('data')
+      .eq('id', USER_DATA_ID)
+      .maybeSingle();
+
     if (data && data.data) {
       appData = data.data;
       renderState();
     }
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function saveData() {
@@ -227,14 +30,32 @@ async function saveData() {
 
   renderState();
 
-  const { error } = await _supabase
+  // Tenta atualizar primeiro
+  const { data: updateData, error: updateError } = await _supabase
     .from('progresso_estudos')
-    .upsert({ id: USER_DATA_ID, data: appData, updated_at: new Date() });
+    .update({ data: appData, updated_at: new Date() })
+    .eq('id', USER_DATA_ID)
+    .select();
 
-  if (!error) {
+  // Se não existia o registro ainda, cria um novo (INSERT)
+  if (!updateError && (!updateData || updateData.length === 0)) {
+    const { error: insertError } = await _supabase
+      .from('progresso_estudos')
+      .insert({ id: USER_DATA_ID, data: appData, updated_at: new Date() });
+
+    if (!insertError) {
+      alert('Progresso criado e salvo com sucesso!');
+      return;
+    } else {
+      alert('Erro no Supabase: ' + insertError.message);
+      return;
+    }
+  }
+
+  if (!updateError) {
     alert('Dados salvos na nuvem com sucesso!');
   } else {
-    alert('Erro ao salvar no Supabase! Verifique se desativou o RLS na tabela progresso_estudos.');
+    alert('Erro no Supabase: ' + updateError.message);
   }
 }
 
@@ -251,9 +72,13 @@ function renderState() {
   if (appData.questoes > 0) {
     const pct = Math.round((appData.acertos / appData.questoes) * 100);
     document.getElementById('ringPct').innerText = `${pct}%`;
-    document.getElementById('ringSub').innerText = `${appData.acertos} / ${appData.questoes}`;
-    const deg = Math.round((pct / 100) * 360);
-    document.getElementById('ringWrap').style.background = `conic-gradient(#17A398 ${deg}deg, #EAEDF3 ${deg}deg)`;
+    document.getElementById('ringSub').innerText = `${appData.acertos} acertos de ${appData.questoes} questões`;
+    
+    if (document.getElementById('statTotalQ')) {
+      document.getElementById('statTotalQ').innerText = appData.questoes;
+      document.getElementById('statTotalA').innerText = appData.acertos;
+      document.getElementById('statPct').innerText = `${pct}%`;
+    }
   }
 }
 
@@ -264,14 +89,12 @@ function toggleBlock(key) {
   saveData();
 }
 
-function switchTab(tabId) {
+function switchTab(tabId, e) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById(`view-${tabId}`).classList.add('active');
-  event.currentTarget.classList.add('active');
+  if (e) e.currentTarget.classList.add('active');
 }
 
 loadData();
 </script>
-</body>
-</html>
