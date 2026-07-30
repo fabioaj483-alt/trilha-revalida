@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trilha Revalida</title>
+  <title>Trilha Revalida 2026</title>
   <style>
     :root {
       --sidebar-bg: #1A2332;
@@ -17,47 +17,61 @@
       --border-color: #E2E8F0;
       --radius: 16px;
 
+      /* CORES POR ÁREA MÉDICA */
       --c-cirurgia: #E5534B;
       --c-preventiva: #14B8A6;
       --c-pediatria: #F59E0B;
       --c-ginecologia: #8B5CF6;
       --c-clinica: #3B82F6;
       --c-simulado: #1E293B;
-      --c-descanso: #CBD5E1;
+      --c-descanso: #94A3B8;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
     body { background: var(--bg); color: var(--text-main); min-height: 100vh; }
-    button { cursor: pointer; border: none; font-family: inherit; }
+    button { cursor: pointer; border: none; font-family: inherit; background: none; }
 
     .app { display: flex; min-height: 100vh; }
 
     /* SIDEBAR */
     .sidebar {
-      width: 250px;
+      width: 260px;
       background: var(--sidebar-bg);
       color: var(--sidebar-text);
       display: flex;
       flex-direction: column;
-      padding: 20px 16px;
+      padding: 24px 16px;
       flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 28px;
+      margin-bottom: 32px;
+      padding-left: 8px;
     }
 
-    .brand-title { color: #FFFFFF; font-weight: 700; font-size: 16px; }
-    .nav { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .brand-icon {
+      width: 32px; height: 32px;
+      background: #0EA5E9;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: #FFF; font-weight: bold; font-size: 16px;
+    }
+
+    .brand-title { color: #FFFFFF; font-weight: 700; font-size: 16px; letter-spacing: -0.3px; }
+    .nav { display: flex; flex-direction: column; gap: 6px; flex: 1; }
 
     .nav-item {
       display: flex; align-items: center; gap: 12px;
-      padding: 12px 14px; border-radius: 8px;
+      padding: 12px 14px; border-radius: 10px;
       color: var(--sidebar-text); background: transparent;
-      font-size: 14px; font-weight: 500; text-align: left; width: 100%;
+      font-size: 14px; font-weight: 600; text-align: left; width: 100%;
+      transition: all 0.15s ease;
     }
 
     .nav-item:hover { background: var(--sidebar-hover); color: #FFFFFF; }
@@ -67,19 +81,28 @@
 
     .streak-card {
       background: rgba(255, 255, 255, 0.05);
-      border-radius: 10px; padding: 14px;
-      display: flex; align-items: center; gap: 10px;
+      border-radius: 12px; padding: 14px;
+      display: flex; align-items: center; gap: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .streak-number { font-size: 20px; font-weight: 700; color: #FFFFFF; }
-    .streak-text { font-size: 11px; color: #64748B; }
+    .streak-number { font-size: 22px; font-weight: 700; color: #FFFFFF; line-height: 1; }
+    .streak-text { font-size: 11px; color: #64748B; margin-top: 3px; }
+    .countdown-box { font-size: 12px; color: #94A3B8; padding: 4px 8px; line-height: 1.4; }
 
-    /* MAIN CONTENT */
-    .main { flex: 1; padding: 32px 40px; }
+    /* MAIN CONTENT AREA */
+    .main { flex: 1; padding: 32px 40px; max-width: 1200px; }
     .view { display: none; }
-    .view.active { display: block; }
+    .view.active { display: block; animation: fadeIn 0.2s ease-in-out; }
 
-    .topbar h1 { font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .topbar { margin-bottom: 24px; }
+    .topbar h1 { font-size: 24px; font-weight: 700; color: #0F172A; }
+    .topbar p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
 
     .card {
       background: var(--card-bg);
@@ -87,82 +110,113 @@
       padding: 24px;
       border: 1px solid var(--border-color);
       margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
       position: relative;
     }
 
     .card-header-right {
       position: absolute;
       top: 24px; right: 24px;
-      display: flex; gap: 10px;
+      display: flex; gap: 8px;
     }
 
     .stat-badge {
       background: #F1F5F9; padding: 6px 12px;
-      border-radius: 8px; font-size: 12px; font-weight: 600;
+      border-radius: 20px; font-size: 12px; font-weight: 600; color: #334155;
     }
 
-    .stat-badge-accent { background: #E0F2FE; color: #0369A1; }
+    .stat-badge-accent { background: #E0F2FE; color: #0284C7; }
 
     .badge-phase {
       display: inline-block; background: #FCE7F3; color: #DB2777;
-      font-size: 11px; font-weight: 700; padding: 4px 8px;
-      border-radius: 6px; margin-bottom: 12px; text-transform: uppercase;
+      font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 6px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;
     }
 
-    .task-list { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
-    .task-row { display: flex; align-items: flex-start; gap: 14px; font-size: 14px; }
-    .task-time { width: 80px; color: var(--text-muted); font-size: 12px; padding-top: 2px; }
+    .task-list { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; }
+    .task-row { display: flex; align-items: flex-start; gap: 14px; font-size: 14px; line-height: 1.5; }
+    .task-time { width: 90px; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-top: 2px; flex-shrink: 0; }
 
-    /* CHECKBOX INTERATIVO */
     .task-check {
       width: 22px; height: 22px; border-radius: 6px;
       border: 2px solid #CBD5E1; background: #FFF;
       cursor: pointer; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
     }
 
-    .task-check.done { background: #0EA5E9; border-color: #0EA5E9; color: #FFF; font-weight: bold; }
-    .task-check.done::after { content: '✓'; font-size: 14px; }
+    .task-check.done { background: #10B981; border-color: #10B981; color: #FFF; font-weight: bold; }
+    .task-check.done::after { content: '✓'; font-size: 13px; }
 
-    .inputs-flex { display: flex; gap: 16px; margin-top: 24px; }
+    .inputs-flex { display: flex; gap: 16px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color); }
     .input-field { display: flex; flex-direction: column; gap: 6px; }
-    .input-field input { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; width: 110px; }
+    .input-field label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    .input-field input { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; width: 120px; font-size: 14px; outline: none; }
+    .input-field input:focus { border-color: #0EA5E9; }
 
     .btn-save {
-      background: #1E293B; color: #FFF;
-      padding: 10px 24px; border-radius: 6px;
-      font-weight: 600; margin-top: 16px;
+      background: #0F172A; color: #FFF;
+      padding: 10px 24px; border-radius: 8px;
+      font-weight: 600; font-size: 14px; margin-top: 20px;
+      transition: background 0.2s;
+    }
+    .btn-save:hover { background: #1E293B; }
+
+    /* TRILHA MAPA DE BOLINHAS */
+    .legend-container { display: flex; gap: 16px; margin-bottom: 24px; font-size: 13px; flex-wrap: wrap; font-weight: 500; }
+    .legend-item { display: flex; align-items: center; gap: 8px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+    .trail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+      gap: 16px;
+      padding: 10px 0;
     }
 
-    /* TRILHA MAPA */
-    .legend-container { display: flex; gap: 16px; margin-bottom: 20px; font-size: 13px; flex-wrap: wrap; }
-    .legend-item { display: flex; align-items: center; gap: 6px; }
-    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
-
-    .trail-map { display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 20px; }
-    .trail-row { display: flex; justify-content: space-around; width: 100%; max-width: 320px; }
     .trail-node {
-      width: 42px; height: 42px; border-radius: 50%;
+      height: 64px; border-radius: 12px;
       color: #FFF; font-weight: 700; font-size: 13px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
     }
+
+    .trail-node:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
+    .trail-node span { font-size: 10px; opacity: 0.85; font-weight: 500; margin-top: 2px; }
+    .trail-node.active-day { outline: 3px solid #0EA5E9; outline-offset: 2px; }
 
     .bg-cirurgia { background-color: var(--c-cirurgia); }
     .bg-preventiva { background-color: var(--c-preventiva); }
     .bg-pediatria { background-color: var(--c-pediatria); }
     .bg-ginecologia { background-color: var(--c-ginecologia); }
     .bg-clinica { background-color: var(--c-clinica); }
+    .bg-simulado { background-color: var(--c-simulado); }
     .bg-descanso { background-color: var(--c-descanso); }
+
+    /* BARRAS DE PROGRESSO DE ESTATÍSTICAS */
+    .stat-bar-container { margin-bottom: 16px; }
+    .stat-bar-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+    .stat-bar-bg { height: 10px; background: #E2E8F0; border-radius: 10px; overflow: hidden; }
+    .stat-bar-fill { height: 100%; border-radius: 10px; transition: width 0.4s ease; }
+
+    /* TABELA DE REVISÕES */
+    .rev-table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 14px; }
+    .rev-table th, .rev-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); }
+    .rev-table th { background: #F8FAFC; color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; }
+    .tag-rev { padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+    .tag-7 { background: #E0F2FE; color: #0284C7; }
+    .tag-14 { background: #FFE4E6; color: #E11D48; }
+    .tag-30 { background: #FEF3C7; color: #D97706; }
 
     /* MODAL */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4); align-items: center; justify-content: center;
+      background: rgba(15, 23, 42, 0.5); align-items: center; justify-content: center; z-index: 1000;
     }
     .modal-overlay.active { display: flex; }
-    .modal-card { background: #FFF; border-radius: var(--radius); width: 90%; max-width: 400px; padding: 24px; position: relative; }
-    .modal-close { position: absolute; top: 12px; right: 12px; background: none; font-size: 20px; cursor: pointer; }
+    .modal-card { background: #FFF; border-radius: var(--radius); width: 90%; max-width: 440px; padding: 28px; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+    .modal-close { position: absolute; top: 16px; right: 16px; background: none; font-size: 22px; cursor: pointer; color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -172,31 +226,35 @@
   <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="brand">
+      <div class="brand-icon">R</div>
       <span class="brand-title">Trilha Revalida</span>
     </div>
 
     <nav class="nav">
-      <button class="nav-item active" onclick="switchTab('hoje', this)">
-        <span>Hoje</span>
+      <button class="nav-item active" id="btn-hoje" onclick="switchTab('hoje', this)">
+        <span>📍 Hoje</span>
       </button>
-      <button class="nav-item" onclick="switchTab('trilha', this)">
-        <span>Trilha (47 dias)</span>
+      <button class="nav-item" id="btn-trilha" onclick="switchTab('trilha', this)">
+        <span>🗺️ Trilha (47 dias)</span>
       </button>
-      <button class="nav-item" onclick="switchTab('estatisticas', this)">
-        <span>Estatísticas</span>
+      <button class="nav-item" id="btn-estatisticas" onclick="switchTab('estatisticas', this)">
+        <span>📊 Estatísticas</span>
       </button>
-      <button class="nav-item" onclick="switchTab('revisoes', this)">
-        <span>Revisões</span>
+      <button class="nav-item" id="btn-revisoes" onclick="switchTab('revisoes', this)">
+        <span>🔄 Revisões Espaçadas</span>
       </button>
     </nav>
 
     <div class="sidebar-footer">
       <div class="streak-card">
-        <span>🔥</span>
+        <span style="font-size: 24px;">🔥</span>
         <div>
-          <div class="streak-number">1</div>
-          <div class="streak-text">dias seguidos</div>
+          <div class="streak-number" id="streakDisplay">1</div>
+          <div class="streak-text">dias seguidos estudados</div>
         </div>
+      </div>
+      <div class="countdown-box">
+        ⏳ Reta Final Revalida<br><b>46 dias restantes</b>
       </div>
     </div>
   </aside>
@@ -204,208 +262,202 @@
   <!-- MAIN -->
   <main class="main">
 
-    <!-- HOJE -->
+    <!-- ABA 1: HOJE -->
     <section class="view active" id="view-hoje">
-      <div class="topbar"><h1>Hoje</h1></div>
+      <div class="topbar">
+        <h1>Planejamento Diário</h1>
+        <p>Acompanhe suas tarefas e registre seu rendimento hoje</p>
+      </div>
+
       <div class="card">
         <div class="card-header-right">
           <span class="stat-badge" id="tasksBadge">0/4 concluídas</span>
           <span class="stat-badge stat-badge-accent" id="pctBadge">0% acertos</span>
         </div>
 
-        <span class="badge-phase">FASE 1</span>
-        <h2 style="font-size: 20px; font-weight: 700;">Cirurgia Geral</h2>
-        <p style="color: var(--text-muted); font-size: 13.5px; margin-top: 4px;">ATLS - ABCDE do trauma + pneumotórax hipertensivo</p>
+        <span class="badge-phase">FASE 1 · DIA 1 DE 47</span>
+        <h2 style="font-size: 20px; font-weight: 700; color: #0F172A;">Cirurgia Geral</h2>
+        <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">ATLS - ABCDE do Trauma & Pneumotórax Hipertensivo</p>
 
         <div class="task-list">
           <div class="task-row">
-            <div class="task-time">10h00</div>
+            <div class="task-time">09:00 - 09:40</div>
             <button class="task-check" onclick="toggleTask('b0', this)"></button>
-            <div>Anki (30-40min) + Caderno de Erros</div>
+            <div>Revisão do Anki + 15 questões do Caderno de Erros do dia anterior</div>
           </div>
           <div class="task-row">
-            <div class="task-time">11h-17h</div>
+            <div class="task-time">10:00 - 16:00</div>
             <button class="task-check" onclick="toggleTask('b1', this)"></button>
-            <div><b>Cirurgia Geral</b> — Meta: 60-80 questões no dia</div>
+            <div><b>Cirurgia Geral:</b> Estudo teórico focado + 2 blocos de 30 questões (Meta: 60 questões)</div>
           </div>
           <div class="task-row">
-            <div class="task-time">17h-18h30</div>
+            <div class="task-time">16:30 - 18:00</div>
             <button class="task-check" onclick="toggleTask('b2', this)"></button>
-            <div>Alimentar Caderno de Erros + Anki</div>
+            <div>Análise de Erros + Cadastro de novos Flashcards no Anki com imagens</div>
           </div>
           <div class="task-row">
-            <div class="task-time">18h30-19h15</div>
+            <div class="task-time">18:00 - 18:45</div>
             <button class="task-check" onclick="toggleTask('b3', this)"></button>
-            <div>10-15 questões rápidas de revisão</div>
+            <div>Bateria rápida de fixação (15 questões aleatórias)</div>
           </div>
         </div>
 
         <div class="inputs-flex">
           <div class="input-field">
-            <label style="font-size: 12px; color: var(--text-muted);">Questões feitas</label>
-            <input type="number" id="inpQ" oninput="calculatePct()" min="0">
+            <label>Questões Feitas</label>
+            <input type="number" id="inpQ" oninput="calculatePct()" min="0" placeholder="0">
           </div>
           <div class="input-field">
-            <label style="font-size: 12px; color: var(--text-muted);">Acertos</label>
-            <input type="number" id="inpA" oninput="calculatePct()" min="0">
+            <label>Acertos</label>
+            <input type="number" id="inpA" oninput="calculatePct()" min="0" placeholder="0">
           </div>
         </div>
 
-        <button class="btn-save" onclick="saveData()">Salvar Progresso</button>
+        <button class="btn-save" onclick="saveData()">💾 Salvar Progresso</button>
       </div>
     </section>
 
-    <!-- TRILHA MAPA -->
+    <!-- ABA 2: TRILHA (47 DIAS) -->
     <section class="view" id="view-trilha">
-      <div class="topbar"><h1>Trilha</h1></div>
+      <div class="topbar">
+        <h1>Trilha dos 47 Dias</h1>
+        <p>Clique em qualquer dia para ver a programação detalhada de matérias</p>
+      </div>
 
       <div class="legend-container">
         <div class="legend-item"><div class="legend-dot bg-cirurgia"></div> Cirurgia</div>
         <div class="legend-item"><div class="legend-dot bg-preventiva"></div> Preventiva</div>
         <div class="legend-item"><div class="legend-dot bg-pediatria"></div> Pediatria</div>
-        <div class="legend-item"><div class="legend-dot bg-ginecologia"></div> G.O.</div>
-        <div class="legend-item"><div class="legend-dot bg-clinica"></div> Clínica</div>
+        <div class="legend-item"><div class="legend-dot bg-ginecologia"></div> Ginecologia & Obstetrícia</div>
+        <div class="legend-item"><div class="legend-dot bg-clinica"></div> Clínica Médica</div>
+        <div class="legend-item"><div class="legend-dot bg-simulado"></div> Simulado</div>
+        <div class="legend-item"><div class="legend-dot bg-descanso"></div> Descanso</div>
       </div>
 
       <div class="card">
-        <div class="trail-map">
-          <div class="trail-row">
-            <div class="trail-node bg-cirurgia" onclick="openModal('1', 'Cirurgia Geral', 'ATLS - ABCDE do trauma')">1</div>
-            <div class="trail-node bg-preventiva" onclick="openModal('2', 'Medicina Preventiva', 'SUS: Princípios')">2</div>
-            <div class="trail-node bg-pediatria" onclick="openModal('3', 'Pediatria', 'Desenvolvimento Infantil')">3</div>
-          </div>
-          <div class="trail-row">
-            <div class="trail-node bg-ginecologia" onclick="openModal('6', 'Ginecologia', 'Pré-natal')">6</div>
-            <div class="trail-node bg-clinica" onclick="openModal('5', 'Clínica Médica', 'Hipertensão')">5</div>
-            <div class="trail-node bg-descanso" onclick="openModal('4', 'Descanso', 'Folga sem estudos')">4</div>
-          </div>
+        <div class="trail-grid" id="trailGrid">
+          <!-- Os 47 dias serão gerados via JavaScript -->
         </div>
       </div>
     </section>
 
-    <!-- ESTATÍSTICAS -->
+    <!-- ABA 3: ESTATÍSTICAS -->
     <section class="view" id="view-estatisticas">
-      <div class="topbar"><h1>Estatísticas</h1></div>
+      <div class="topbar">
+        <h1>Desempenho Geral</h1>
+        <p>Métricas consolidadas do seu progresso no Revalida</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px;">
+        <div class="card" style="margin-bottom:0;">
+          <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">TOTAL DE QUESTÕES</span>
+          <h2 style="font-size: 28px; margin-top: 8px;" id="statTotalQ">0</h2>
+        </div>
+        <div class="card" style="margin-bottom:0;">
+          <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">TAXA DE ACERTO</span>
+          <h2 style="font-size: 28px; margin-top: 8px; color: #0284C7;" id="statTotalPct">0%</h2>
+        </div>
+        <div class="card" style="margin-bottom:0;">
+          <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">DIAS CONCLUÍDOS</span>
+          <h2 style="font-size: 28px; margin-top: 8px; color: #10B981;" id="statDaysDone">1 / 47</h2>
+        </div>
+      </div>
+
       <div class="card">
-        <h3>Resumo de Rendimento</h3>
-        <p style="color: var(--text-muted); font-size: 14px; margin-top: 8px;">Os dados salvos na aba "Hoje" ficam registrados no seu navegador localmente.</p>
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 20px;">Aproveitamento por Área Médica</h3>
+        
+        <div class="stat-bar-container">
+          <div class="stat-bar-label"><span>Cirurgia Geral</span><span>78%</span></div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill bg-cirurgia" style="width: 78%;"></div></div>
+        </div>
+        <div class="stat-bar-container">
+          <div class="stat-bar-label"><span>Medicina Preventiva</span><span>84%</span></div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill bg-preventiva" style="width: 84%;"></div></div>
+        </div>
+        <div class="stat-bar-container">
+          <div class="stat-bar-label"><span>Pediatria</span><span>71%</span></div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill bg-pediatria" style="width: 71%;"></div></div>
+        </div>
+        <div class="stat-bar-container">
+          <div class="stat-bar-label"><span>Ginecologia e Obstetrícia</span><span>80%</span></div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill bg-ginecologia" style="width: 80%;"></div></div>
+        </div>
+        <div class="stat-bar-container">
+          <div class="stat-bar-label"><span>Clínica Médica</span><span>75%</span></div>
+          <div class="stat-bar-bg"><div class="stat-bar-fill bg-clinica" style="width: 75%;"></div></div>
+        </div>
       </div>
     </section>
 
-    <!-- REVISÕES -->
+    <!-- ABA 4: REVISÕES -->
     <section class="view" id="view-revisoes">
-      <div class="topbar"><h1>Revisões Espaçadas</h1></div>
+      <div class="topbar">
+        <h1>Sistema de Revisão Espaçada</h1>
+        <p>Tópicos agendados para fixação (Ciclos de 7, 14 e 30 dias)</p>
+      </div>
+
       <div class="card">
-        <p style="color: var(--text-muted); font-size: 14px;">Nenhuma revisão pendente para o dia de hoje.</p>
+        <table class="rev-table">
+          <thead>
+            <tr>
+              <th>Tema / Matéria</th>
+              <th>Ciclo</th>
+              <th>Data do Estudo</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>ATLS e Trauma Torácico</b><br><span style="font-size:12px; color:var(--text-muted)">Cirurgia Geral</span></td>
+              <td><span class="tag-rev tag-7">7 dias</span></td>
+              <td>Hoje</td>
+              <td><span style="color:#10B981; font-weight:600;">PENDENTE</span></td>
+            </tr>
+            <tr>
+              <td><b>SUS: Princípios e Diretrizes</b><br><span style="font-size:12px; color:var(--text-muted)">Preventiva</span></td>
+              <td><span class="tag-rev tag-14">14 dias</span></td>
+              <td>Amanhã</td>
+              <td><span style="color:var(--text-muted);">Aguardando</span></td>
+            </tr>
+            <tr>
+              <td><b>Imunizações e Calendário Vacinal</b><br><span style="font-size:12px; color:var(--text-muted)">Pediatria</span></td>
+              <td><span class="tag-rev tag-30">30 dias</span></td>
+              <td>Em 3 dias</td>
+              <td><span style="color:var(--text-muted);">Aguardando</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
   </main>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL DE DETALHES DA TRILHA -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal-card">
     <button class="modal-close" onclick="closeModal()">&times;</button>
-    <span class="badge-phase" id="mPhase">FASE 1</span>
-    <h3 id="mArea" style="font-size: 18px; margin-bottom: 6px;">—</h3>
-    <p id="mTopic" style="color: var(--text-muted); font-size: 14px;">—</p>
+    <span class="badge-phase" id="mPhase">DIA 1</span>
+    <h3 id="mArea" style="font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #0F172A;">—</h3>
+    <p id="mTopic" style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 20px;">—</p>
+    <button class="btn-save" style="width: 100%; margin: 0;" onclick="closeModal()">Fechar</button>
   </div>
 </div>
 
 <script>
-  var appState = {
-    b0: false, b1: false, b2: false, b3: false,
-    q: 0, a: 0
-  };
-
-  function switchTab(viewId, element) {
-    var views = document.querySelectorAll('.view');
-    var navs = document.querySelectorAll('.nav-item');
-    
-    for (var i = 0; i < views.length; i++) { views[i].classList.remove('active'); }
-    for (var j = 0; j < navs.length; j++) { navs[j].classList.remove('active'); }
-
-    document.getElementById('view-' + viewId).classList.add('active');
-    element.classList.add('active');
-  }
-
-  function toggleTask(key, btn) {
-    appState[key] = !appState[key];
-    if (appState[key]) {
-      btn.classList.add('done');
-    } else {
-      btn.classList.remove('done');
-    }
-    updateCompletedCounter();
-  }
-
-  function updateCompletedCounter() {
-    var done = 0;
-    if (appState.b0) done++;
-    if (appState.b1) done++;
-    if (appState.b2) done++;
-    if (appState.b3) done++;
-    document.getElementById('tasksBadge').innerText = done + '/4 concluídas';
-  }
-
-  function calculatePct() {
-    var q = parseInt(document.getElementById('inpQ').value) || 0;
-    var a = parseInt(document.getElementById('inpA').value) || 0;
-    appState.q = q;
-    appState.a = a;
-
-    var pct = 0;
-    if (q > 0) {
-      pct = Math.round((a / q) * 100);
-    }
-    document.getElementById('pctBadge').innerText = pct + '% acertos';
-  }
-
-  function saveData() {
-    try {
-      localStorage.setItem('trilha_state', JSON.stringify(appState));
-      alert('Progresso salvo com sucesso!');
-    } catch(e) {
-      alert('Erro ao salvar localmente.');
-    }
-  }
-
-  function loadData() {
-    var saved = localStorage.getItem('trilha_state');
-    if (saved) {
-      try {
-        appState = JSON.parse(saved);
-        var buttons = document.querySelectorAll('.task-check');
-        if (appState.b0) buttons[0].classList.add('done');
-        if (appState.b1) buttons[1].classList.add('done');
-        if (appState.b2) buttons[2].classList.add('done');
-        if (appState.b3) buttons[3].classList.add('done');
-
-        document.getElementById('inpQ').value = appState.q || '';
-        document.getElementById('inpA').value = appState.a || '';
-
-        updateCompletedCounter();
-        calculatePct();
-      } catch(e) {}
-    }
-  }
-
-  function openModal(day, area, topic) {
-    document.getElementById('mPhase').innerText = 'Dia ' + day;
-    document.getElementById('mArea').innerText = area;
-    document.getElementById('mTopic').innerText = topic;
-    document.getElementById('dayModal').classList.add('active');
-  }
-
-  function closeModal() {
-    document.getElementById('dayModal').classList.remove('active');
-  }
-
-  window.onload = function() {
-    loadData();
-  };
-</script>
-
-</body>
-</html>
+  // BANCO DE DADOS DOS 47 DIAS
+  const trilhaData = [
+    { day: 1, area: 'Cirurgia', cls: 'bg-cirurgia', topic: 'ATLS - ABCDE do trauma + Pneumotórax' },
+    { day: 2, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Princípios do SUS e Regulamentação' },
+    { day: 3, area: 'Pediatria', cls: 'bg-pediatria', topic: 'Crescimento e Desenvolvimento Pondero-Estatural' },
+    { day: 4, area: 'GO', cls: 'bg-ginecologia', topic: 'Assistência Pré-Natal e Sangramentos 1º Trimestre' },
+    { day: 5, area: 'Clínica', cls: 'bg-clinica', topic: 'Hipertensão Arterial e Urgências/Emergências' },
+    { day: 6, area: 'Descanso', cls: 'bg-descanso', topic: 'Dia Livre / Recuperação de Bateria' },
+    { day: 7, area: 'Simulado', cls: 'bg-simulado', topic: 'Simulado 100 Questões - Bloco 1' },
+    { day: 8, area: 'Cirurgia', cls: 'bg-cirurgia', topic: 'Trauma Abdominal e Pelviano' },
+    { day: 9, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Indicadores de Saúde e Transição Epidemiológica' },
+    { day: 10, area: 'Pediatria', cls: 'bg-pediatria', topic: 'Calendário de Vacinação e Imunizações' },
+    { day: 11, area: 'GO', cls: 'bg-ginecologia', topic: 'Síndromes Hipertensivas na Gestação e DHEG' },
+    { day: 12, area: 'Clínica', cls: 'bg-clinica', topic: 'Diabetes Mellitus: Diagnóstico e Complicações' },
+    { day: 13, area: 'Descanso', cls: 'bg-descanso', topic: 'Dia de Lazer' },
+    { day: 14, area: '
