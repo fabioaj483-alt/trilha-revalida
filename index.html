@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trilha Revalida — Painel de Estudos</title>
+
+<!-- IMPORTANTE: Carrega o SDK do Supabase antes de qualquer estilo ou script -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root{
@@ -93,7 +96,7 @@ button{ font-family:inherit; cursor:pointer; }
         <span>Trilha</span>
       </button>
       <button class="nav-item" onclick="switchTab('revisoes', event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
         <span>Revisões</span>
       </button>
       <button class="nav-item" onclick="switchTab('estatisticas', event)">
@@ -231,12 +234,21 @@ button{ font-family:inherit; cursor:pointer; }
 const SUPABASE_URL = 'https://hizgqlftbejocvrgugl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpemdxbGZ0YmVqb2N2cmd1Z2wiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczODE0NjIxOCwiZXhwIjoyMDUzNzIyMjE4fQ.J-JN0ub1FAmjW72zhTSwie9UgHHIoagcRfARPURJBys';
 
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let _supabase;
 const USER_DATA_ID = 'meu_progresso_revalida';
-
 let appData = { blocks: {}, questoes: 0, acertos: 0 };
 
+function initSupabase() {
+  if (window.supabase) {
+    _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    loadData();
+  } else {
+    setTimeout(initSupabase, 100);
+  }
+}
+
 async function loadData() {
+  if (!_supabase) return;
   try {
     const { data } = await _supabase
       .from('progresso_estudos')
@@ -254,6 +266,7 @@ async function loadData() {
 }
 
 async function saveData() {
+  if (!_supabase) return;
   appData.questoes = parseInt(document.getElementById('inpQ').value) || 0;
   appData.acertos = parseInt(document.getElementById('inpA').value) || 0;
 
@@ -323,7 +336,7 @@ function switchTab(tabId, e) {
   if (e) e.currentTarget.classList.add('active');
 }
 
-loadData();
+window.addEventListener('DOMContentLoaded', initSupabase);
 </script>
 </body>
 </html>
