@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trilha Revalida</title>
 
+<!-- Supabase & Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +26,7 @@
   --border-color: #E2E8F0;
   --radius: 16px;
 
-  /* CORES DAS ÁREAS MEDICAS DA TRILHA */
+  /* CORES DAS ÁREAS MÈDICAS */
   --c-cirurgia: #E5534B;
   --c-preventiva: #14B8A6;
   --c-pediatria: #F59E0B;
@@ -74,18 +76,9 @@ button { font-family: inherit; cursor: pointer; border: none; }
   justify-content: center;
 }
 
-.brand-title {
-  color: #FFFFFF;
-  font-weight: 700;
-  font-size: 15px;
-}
+.brand-title { color: #FFFFFF; font-weight: 700; font-size: 15px; }
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-}
+.nav { display: flex; flex-direction: column; gap: 6px; flex: 1; }
 
 .nav-item {
   display: flex;
@@ -101,15 +94,8 @@ button { font-family: inherit; cursor: pointer; border: none; }
   width: 100%;
 }
 
-.nav-item:hover {
-  background: var(--sidebar-hover);
-  color: #FFFFFF;
-}
-
-.nav-item.active {
-  background: var(--sidebar-active);
-  color: #FFFFFF;
-}
+.nav-item:hover { background: var(--sidebar-hover); color: #FFFFFF; }
+.nav-item.active { background: var(--sidebar-active); color: #FFFFFF; }
 
 .nav-item svg {
   width: 18px;
@@ -119,12 +105,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
   fill: none;
 }
 
-.sidebar-footer {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
 
 .streak-card {
   background: rgba(255, 255, 255, 0.05);
@@ -135,40 +116,16 @@ button { font-family: inherit; cursor: pointer; border: none; }
   gap: 10px;
 }
 
-.streak-number {
-  font-size: 22px;
-  font-weight: 700;
-  color: #FFFFFF;
-  line-height: 1;
-}
-
-.streak-text {
-  font-size: 11px;
-  color: #64748B;
-  margin-top: 4px;
-}
-
-.countdown-text {
-  font-size: 11px;
-  color: #64748B;
-  padding-left: 4px;
-}
+.streak-number { font-size: 22px; font-weight: 700; color: #FFFFFF; line-height: 1; }
+.streak-text { font-size: 11px; color: #64748B; margin-top: 4px; }
+.countdown-text { font-size: 11px; color: #64748B; padding-left: 4px; }
 
 /* MAIN CONTENT */
-.main {
-  flex: 1;
-  padding: 32px 40px;
-  min-width: 0;
-}
-
+.main { flex: 1; padding: 32px 40px; min-width: 0; }
 .view { display: none; }
 .view.active { display: block; }
 
-.topbar h1 {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 20px;
-}
+.topbar h1 { font-size: 22px; font-weight: 700; margin-bottom: 20px; }
 
 .card {
   background: var(--card-bg);
@@ -191,19 +148,9 @@ button { font-family: inherit; cursor: pointer; border: none; }
   text-transform: uppercase;
 }
 
-.task-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 20px;
-}
+.task-list { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
 
-.task-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  font-size: 13.5px;
-}
+.task-row { display: flex; align-items: flex-start; gap: 14px; font-size: 13.5px; }
 
 .task-time {
   width: 70px;
@@ -239,24 +186,9 @@ button { font-family: inherit; cursor: pointer; border: none; }
   line-height: 14px;
 }
 
-.inputs-flex {
-  display: flex;
-  gap: 16px;
-  margin-top: 24px;
-}
-
-.input-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.input-field input {
-  padding: 8px 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  width: 110px;
-}
+.inputs-flex { display: flex; gap: 16px; margin-top: 24px; }
+.input-field { display: flex; flex-direction: column; gap: 6px; }
+.input-field input { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; width: 110px; }
 
 .btn-save {
   background: #1E293B;
@@ -267,7 +199,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
   margin-top: 16px;
 }
 
-/* ESTILOS DA TRILHA DE BOLINHAS (CAMINHO) */
+/* TRILHA (MAPA) */
 .date-pill {
   display: inline-block;
   background: #FFFFFF;
@@ -290,17 +222,8 @@ button { font-family: inherit; cursor: pointer; border: none; }
   font-weight: 500;
 }
 
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
+.legend-item { display: flex; align-items: center; gap: 8px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
 
 .trail-map {
   display: flex;
@@ -319,7 +242,6 @@ button { font-family: inherit; cursor: pointer; border: none; }
   position: relative;
 }
 
-/* Linhas horizontais de conexão entre bolinhas */
 .trail-row::before {
   content: '';
   position: absolute;
@@ -331,7 +253,6 @@ button { font-family: inherit; cursor: pointer; border: none; }
   z-index: 1;
 }
 
-/* Linha vertical de curva direita */
 .curve-right::after {
   content: '';
   position: absolute;
@@ -343,7 +264,6 @@ button { font-family: inherit; cursor: pointer; border: none; }
   z-index: 1;
 }
 
-/* Linha vertical de curva esquerda */
 .curve-left::after {
   content: '';
   position: absolute;
@@ -369,13 +289,11 @@ button { font-family: inherit; cursor: pointer; border: none; }
   z-index: 2;
   box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   cursor: pointer;
+  transition: transform 0.2s ease;
 }
 
-/* Anel pontilhado no dia atual */
-.trail-node.active-day {
-  outline: 2px dashed #E5534B;
-  outline-offset: 4px;
-}
+.trail-node:hover { transform: scale(1.1); }
+.trail-node.active-day { outline: 2px dashed #E5534B; outline-offset: 4px; }
 
 .bg-cirurgia { background-color: var(--c-cirurgia); }
 .bg-preventiva { background-color: var(--c-preventiva); }
@@ -385,33 +303,42 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .bg-simulado { background-color: var(--c-simulado); }
 .bg-descanso { background-color: var(--c-descanso); }
 
-/* BARRAS DE ESTATÍSTICAS */
-.progress-bar-container {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.progress-label {
-  width: 160px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.progress-track {
-  flex: 1;
-  height: 12px;
-  background: #E2E8F0;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
+/* PROGRESSO E ESTATÍSTICAS */
+.progress-bar-container { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+.progress-label { width: 160px; font-size: 13px; font-weight: 600; }
+.progress-track { flex: 1; height: 12px; background: #E2E8F0; border-radius: 6px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 6px; }
 .progress-val { font-size: 12px; font-weight: 600; width: 40px; text-align: right; }
 .status-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
 .status-abaixo { background: #FEE2E2; color: #DC2626; }
 .status-meta { background: #E0F2FE; color: #0284C7; }
+
+/* MODAL DE DETALHES DO DIA DA TRILHA */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+.modal-card {
+  background: #FFF;
+  border-radius: var(--radius);
+  width: 90%;
+  max-width: 480px;
+  padding: 24px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: none; border: none;
+  font-size: 20px; color: var(--text-muted); cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -514,7 +441,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
       </div>
     </section>
 
-    <!-- TRILHA (47 DIAS) COM MAPA VISUAL -->
+    <!-- TRILHA (47 DIAS) COM MAPA VISUAL E CLIQUE -->
     <section class="view" id="view-trilha">
       <div class="date-pill">29/07/2026 · Quarta</div>
 
@@ -531,62 +458,63 @@ button { font-family: inherit; cursor: pointer; border: none; }
       <div class="card">
         <div class="trail-map">
           
-          <!-- Linha 1 (Esq -> Dir) -->
+          <!-- Linha 1 -->
           <div class="trail-row curve-right">
-            <div class="trail-node bg-cirurgia active-day">1</div>
-            <div class="trail-node bg-preventiva">2</div>
-            <div class="trail-node bg-pediatria">3</div>
+            <div class="trail-node bg-cirurgia active-day" onclick="openDayModal(1)">1</div>
+            <div class="trail-node bg-preventiva" onclick="openDayModal(2)">2</div>
+            <div class="trail-node bg-pediatria" onclick="openDayModal(3)">3</div>
           </div>
 
-          <!-- Linha 2 (Dir -> Esq) -->
+          <!-- Linha 2 -->
           <div class="trail-row curve-left">
-            <div class="trail-node bg-ginecologia">14</div>
-            <div class="trail-node bg-clinica">13</div>
-            <div class="trail-node bg-descanso">12</div>
+            <div class="trail-node bg-ginecologia" onclick="openDayModal(14)">14</div>
+            <div class="trail-node bg-clinica" onclick="openDayModal(13)">13</div>
+            <div class="trail-node bg-descanso" onclick="openDayModal(12)">12</div>
           </div>
 
-          <!-- Linha 3 (Esq -> Dir) -->
+          <!-- Linha 3 -->
           <div class="trail-row curve-right">
-            <div class="trail-node bg-cirurgia">15</div>
-            <div class="trail-node bg-preventiva">16</div>
-            <div class="trail-node bg-pediatria">17</div>
+            <div class="trail-node bg-cirurgia" onclick="openDayModal(15)">15</div>
+            <div class="trail-node bg-preventiva" onclick="openDayModal(16)">16</div>
+            <div class="trail-node bg-pediatria" onclick="openDayModal(17)">17</div>
           </div>
 
-          <!-- Linha 4 (Dir -> Esq) -->
+          <!-- Linha 4 -->
           <div class="trail-row curve-left">
-            <div class="trail-node bg-clinica">28</div>
-            <div class="trail-node bg-cirurgia">27</div>
-            <div class="trail-node bg-descanso">26</div>
+            <div class="trail-node bg-clinica" onclick="openDayModal(28)">28</div>
+            <div class="trail-node bg-cirurgia" onclick="openDayModal(27)">27</div>
+            <div class="trail-node bg-descanso" onclick="openDayModal(26)">26</div>
           </div>
 
-          <!-- Linha 5 (Esq -> Dir) -->
+          <!-- Linha 5 -->
           <div class="trail-row curve-right">
-            <div class="trail-node bg-ginecologia">29</div>
-            <div class="trail-node bg-preventiva">30</div>
-            <div class="trail-node bg-pediatria">31</div>
+            <div class="trail-node bg-ginecologia" onclick="openDayModal(29)">29</div>
+            <div class="trail-node bg-preventiva" onclick="openDayModal(30)">30</div>
+            <div class="trail-node bg-pediatria" onclick="openDayModal(31)">31</div>
           </div>
 
-          <!-- Linha 6 (Dir -> Esq) -->
+          <!-- Linha 6 -->
           <div class="trail-row curve-left">
-            <div class="trail-node bg-preventiva">42</div>
-            <div class="trail-node bg-cirurgia">41</div>
-            <div class="trail-node bg-descanso">40</div>
+            <div class="trail-node bg-preventiva" onclick="openDayModal(42)">42</div>
+            <div class="trail-node bg-cirurgia" onclick="openDayModal(41)">41</div>
+            <div class="trail-node bg-descanso" onclick="openDayModal(40)">40</div>
           </div>
 
-          <!-- Linha 7 (Esq -> Dir) -->
+          <!-- Linha 7 -->
           <div class="trail-row">
-            <div class="trail-node bg-pediatria">43</div>
-            <div class="trail-node bg-ginecologia">44</div>
-            <div class="trail-node bg-clinica">45</div>
+            <div class="trail-node bg-pediatria" onclick="openDayModal(43)">43</div>
+            <div class="trail-node bg-ginecologia" onclick="openDayModal(44)">44</div>
+            <div class="trail-node bg-clinica" onclick="openDayModal(45)">45</div>
           </div>
 
         </div>
       </div>
     </section>
 
-    <!-- ESTATÍSTICAS -->
+    <!-- ESTATÍSTICAS COM BARRAS + GRÁFICO -->
     <section class="view" id="view-estatisticas">
       <div class="topbar"><h1>Estatísticas</h1></div>
+      
       <div class="card">
         <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 20px;">Progresso por área (meta = traço vertical)</h3>
 
@@ -625,6 +553,12 @@ button { font-family: inherit; cursor: pointer; border: none; }
           <span class="status-badge status-meta">Na meta</span>
         </div>
       </div>
+
+      <!-- GRÁFICO DE EVOLUÇÃO -->
+      <div class="card">
+        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">Evolução de Desempenho (%)</h3>
+        <canvas id="performanceChart" height="120"></canvas>
+      </div>
     </section>
 
     <!-- REVISÕES -->
@@ -639,6 +573,21 @@ button { font-family: inherit; cursor: pointer; border: none; }
   </main>
 </div>
 
+<!-- MODAL FLUTUANTE DO DIA DA TRILHA -->
+<div class="modal-overlay" id="dayModal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeDayModal()">&times;</button>
+    <span class="badge-phase" id="mPhase">FASE 1</span>
+    <h2 id="mArea" style="font-size: 18px; font-weight: 700; margin-bottom: 4px;">—</h2>
+    <p id="mTopic" style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 16px;">—</p>
+    
+    <div style="background: #F8FAFC; padding: 14px; border-radius: 8px; font-size: 13px;">
+      <strong>Meta do dia:</strong>
+      <p style="margin-top: 4px; color: var(--text-muted);">Resolver de 60 a 80 questões focadas nos tópicos prioritários + Anki diário.</p>
+    </div>
+  </div>
+</div>
+
 <script>
 const SUPABASE_URL = 'https://hizcqlftbejocvrgugl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpemNxbGZ0YmVqb2N2cmd1Z2wiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczODE0NjIxOCwiZXhwIjoyMDUzNzIyMjE4fQ.J-JN0ub1FAmjW72zhTSwie9UgHHIoagcRfARPURJBys';
@@ -646,88 +595,10 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 let _supabase;
 const USER_DATA_ID = 'meu_progresso_revalida';
 let appData = { blocks: {}, questoes: 0, acertos: 0, streak: 0 };
+let perfChart = null;
 
-function initApp() {
-  const localSaved = localStorage.getItem('revalida_app_data');
-  if (localSaved) {
-    try {
-      appData = JSON.parse(localSaved);
-      renderState();
-    } catch(e){}
-  }
-
-  if (window.supabase) {
-    try {
-      _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-      loadFromNuvem();
-    } catch (e) {
-      console.warn('Operando localmente.', e);
-    }
-  }
-}
-
-async function loadFromNuvem() {
-  if (!_supabase) return;
-  try {
-    const { data, error } = await _supabase
-      .from('progresso_estudos')
-      .select('data')
-      .eq('id', USER_DATA_ID)
-      .maybeSingle();
-
-    if (!error && data && data.data) {
-      appData = data.data;
-      localStorage.setItem('revalida_app_data', JSON.stringify(appData));
-      renderState();
-    }
-  } catch (err) {}
-}
-
-async function saveData() {
-  appData.questoes = parseInt(document.getElementById('inpQ').value) || 0;
-  appData.acertos = parseInt(document.getElementById('inpA').value) || 0;
-
-  localStorage.setItem('revalida_app_data', JSON.stringify(appData));
-  renderState();
-
-  if (_supabase) {
-    try {
-      await _supabase
-        .from('progresso_estudos')
-        .upsert({ id: USER_DATA_ID, data: appData, updated_at: new Date() });
-    } catch (e) {}
-  }
-  alert('Salvo com sucesso!');
-}
-
-function renderState() {
-  document.getElementById('inpQ').value = appData.questoes || '';
-  document.getElementById('inpA').value = appData.acertos || '';
-  document.getElementById('streakCount').innerText = appData.streak || 0;
-
-  document.querySelectorAll('.task-check').forEach(btn => {
-    const key = btn.dataset.blockkey;
-    if (appData.blocks && appData.blocks[key]) btn.classList.add('done');
-    else btn.classList.remove('done');
-  });
-}
-
-function toggleBlock(key) {
-  if (!appData.blocks) appData.blocks = {};
-  appData.blocks[key] = !appData.blocks[key];
-  renderState();
-  saveData();
-}
-
-function switchTab(tabId, e) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById(`view-${tabId}`).classList.add('active');
-  if (e) e.currentTarget.classList.add('active');
-}
-
-window.addEventListener('DOMContentLoaded', initApp);
-</script>
-
-</body>
-</html>
+/* DADOS DOS DIAS DA TRILHA */
+const trailDetails = {
+  1: { area: 'Cirurgia Geral', topic: 'ATLS - ABCDE do trauma + pneumotórax hipertensivo', phase: 'Dia 1 · Fase 1' },
+  2: { area: 'Medicina Preventiva', topic: 'SUS: Princípios, Diretrizes e Leis Orgânicas (8.080 / 8.142)', phase: 'Dia 2 · Fase 1' },
+  3: { area: 'Pediatria', topic: 'Crescimento, Desenvolvimento e Puericultura', phase: 'Dia 3 · Fase 1
