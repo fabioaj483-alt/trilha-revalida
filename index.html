@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trilha Revalida — Painel de Estudos</title>
 
-<!-- IMPORTANTE: Carrega o SDK do Supabase antes de qualquer estilo ou script -->
+<!-- SDK do Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -231,8 +231,9 @@ button{ font-family:inherit; cursor:pointer; }
 </div>
 
 <script>
-const SUPABASE_URL = 'https://hizgqlftbejocvrgugl.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpemdxbGZ0YmVqb2N2cmd1Z2wiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczODE0NjIxOCwiZXhwIjoyMDUzNzIyMjE4fQ.J-JN0ub1FAmjW72zhTSwie9UgHHIoagcRfARPURJBys';
+// URL do Supabase corrigida para o seu projeto exato
+const SUPABASE_URL = 'https://hizcqlftbejocvrgugl.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpemNxbGZ0YmVqb2N2cmd1Z2wiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczODE0NjIxOCwiZXhwIjoyMDUzNzIyMjE4fQ.J-JN0ub1FAmjW72zhTSwie9UgHHIoagcRfARPURJBys';
 
 let _supabase;
 const USER_DATA_ID = 'meu_progresso_revalida';
