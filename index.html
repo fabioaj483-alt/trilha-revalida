@@ -45,6 +45,7 @@
       position: sticky;
       top: 0;
       height: 100vh;
+      z-index: 10;
     }
 
     .brand {
@@ -72,6 +73,7 @@
       color: var(--sidebar-text); background: transparent;
       font-size: 14px; font-weight: 600; text-align: left; width: 100%;
       transition: all 0.15s ease;
+      cursor: pointer;
     }
 
     .nav-item:hover { background: var(--sidebar-hover); color: #FFFFFF; }
@@ -137,16 +139,18 @@
     .task-row { display: flex; align-items: flex-start; gap: 14px; font-size: 14px; line-height: 1.5; }
     .task-time { width: 90px; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-top: 2px; flex-shrink: 0; }
 
+    /* CHECKBOX INTERATIVO CORRIGIDO */
     .task-check {
-      width: 22px; height: 22px; border-radius: 6px;
+      width: 24px; height: 24px; border-radius: 6px;
       border: 2px solid #CBD5E1; background: #FFF;
       cursor: pointer; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       transition: all 0.2s ease;
+      user-select: none;
     }
 
     .task-check.done { background: #10B981; border-color: #10B981; color: #FFF; font-weight: bold; }
-    .task-check.done::after { content: '✓'; font-size: 13px; }
+    .task-check.done::after { content: '✓'; font-size: 14px; color: #FFFFFF; }
 
     .inputs-flex { display: flex; gap: 16px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border-color); }
     .input-field { display: flex; flex-direction: column; gap: 6px; }
@@ -159,6 +163,7 @@
       padding: 10px 24px; border-radius: 8px;
       font-weight: 600; font-size: 14px; margin-top: 20px;
       transition: background 0.2s;
+      cursor: pointer;
     }
     .btn-save:hover { background: #1E293B; }
 
@@ -180,6 +185,7 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease;
       box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+      user-select: none;
     }
 
     .trail-node:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
@@ -194,11 +200,11 @@
     .bg-simulado { background-color: var(--c-simulado); }
     .bg-descanso { background-color: var(--c-descanso); }
 
-    /* BARRAS DE PROGRESSO DE ESTATÍSTICAS */
+    /* BARRAS DE PROGRESSO */
     .stat-bar-container { margin-bottom: 16px; }
     .stat-bar-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
     .stat-bar-bg { height: 10px; background: #E2E8F0; border-radius: 10px; overflow: hidden; }
-    .stat-bar-fill { height: 100%; border-radius: 10px; transition: width 0.4s ease; }
+    .stat-bar-fill { height: 100%; border-radius: 10px; }
 
     /* TABELA DE REVISÕES */
     .rev-table { width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left; font-size: 14px; }
@@ -231,16 +237,16 @@
     </div>
 
     <nav class="nav">
-      <button class="nav-item active" id="btn-hoje" onclick="switchTab('hoje', this)">
+      <button class="nav-item active" data-tab="hoje">
         <span>📍 Hoje</span>
       </button>
-      <button class="nav-item" id="btn-trilha" onclick="switchTab('trilha', this)">
+      <button class="nav-item" data-tab="trilha">
         <span>🗺️ Trilha (47 dias)</span>
       </button>
-      <button class="nav-item" id="btn-estatisticas" onclick="switchTab('estatisticas', this)">
+      <button class="nav-item" data-tab="estatisticas">
         <span>📊 Estatísticas</span>
       </button>
-      <button class="nav-item" id="btn-revisoes" onclick="switchTab('revisoes', this)">
+      <button class="nav-item" data-tab="revisoes">
         <span>🔄 Revisões Espaçadas</span>
       </button>
     </nav>
@@ -249,7 +255,7 @@
       <div class="streak-card">
         <span style="font-size: 24px;">🔥</span>
         <div>
-          <div class="streak-number" id="streakDisplay">1</div>
+          <div class="streak-number">1</div>
           <div class="streak-text">dias seguidos estudados</div>
         </div>
       </div>
@@ -282,22 +288,22 @@
         <div class="task-list">
           <div class="task-row">
             <div class="task-time">09:00 - 09:40</div>
-            <button class="task-check" onclick="toggleTask('b0', this)"></button>
+            <div class="task-check" data-key="b0"></div>
             <div>Revisão do Anki + 15 questões do Caderno de Erros do dia anterior</div>
           </div>
           <div class="task-row">
             <div class="task-time">10:00 - 16:00</div>
-            <button class="task-check" onclick="toggleTask('b1', this)"></button>
+            <div class="task-check" data-key="b1"></div>
             <div><b>Cirurgia Geral:</b> Estudo teórico focado + 2 blocos de 30 questões (Meta: 60 questões)</div>
           </div>
           <div class="task-row">
             <div class="task-time">16:30 - 18:00</div>
-            <button class="task-check" onclick="toggleTask('b2', this)"></button>
+            <div class="task-check" data-key="b2"></div>
             <div>Análise de Erros + Cadastro de novos Flashcards no Anki com imagens</div>
           </div>
           <div class="task-row">
             <div class="task-time">18:00 - 18:45</div>
-            <button class="task-check" onclick="toggleTask('b3', this)"></button>
+            <div class="task-check" data-key="b3"></div>
             <div>Bateria rápida de fixação (15 questões aleatórias)</div>
           </div>
         </div>
@@ -305,15 +311,15 @@
         <div class="inputs-flex">
           <div class="input-field">
             <label>Questões Feitas</label>
-            <input type="number" id="inpQ" oninput="calculatePct()" min="0" placeholder="0">
+            <input type="number" id="inpQ" min="0" placeholder="0">
           </div>
           <div class="input-field">
             <label>Acertos</label>
-            <input type="number" id="inpA" oninput="calculatePct()" min="0" placeholder="0">
+            <input type="number" id="inpA" min="0" placeholder="0">
           </div>
         </div>
 
-        <button class="btn-save" onclick="saveData()">💾 Salvar Progresso</button>
+        <button class="btn-save" id="btnSaveData">💾 Salvar Progresso</button>
       </div>
     </section>
 
@@ -335,9 +341,7 @@
       </div>
 
       <div class="card">
-        <div class="trail-grid" id="trailGrid">
-          <!-- Os 47 dias serão gerados via JavaScript -->
-        </div>
+        <div class="trail-grid" id="trailGrid"></div>
       </div>
     </section>
 
@@ -359,13 +363,12 @@
         </div>
         <div class="card" style="margin-bottom:0;">
           <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">DIAS CONCLUÍDOS</span>
-          <h2 style="font-size: 28px; margin-top: 8px; color: #10B981;" id="statDaysDone">1 / 47</h2>
+          <h2 style="font-size: 28px; margin-top: 8px; color: #10B981;">1 / 47</h2>
         </div>
       </div>
 
       <div class="card">
         <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 20px;">Aproveitamento por Área Médica</h3>
-        
         <div class="stat-bar-container">
           <div class="stat-bar-label"><span>Cirurgia Geral</span><span>78%</span></div>
           <div class="stat-bar-bg"><div class="stat-bar-fill bg-cirurgia" style="width: 78%;"></div></div>
@@ -433,19 +436,19 @@
   </main>
 </div>
 
-<!-- MODAL DE DETALHES DA TRILHA -->
+<!-- MODAL FLUTUANTE -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal-card">
-    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <button class="modal-close" id="btnCloseModal">&times;</button>
     <span class="badge-phase" id="mPhase">DIA 1</span>
     <h3 id="mArea" style="font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #0F172A;">—</h3>
     <p id="mTopic" style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 20px;">—</p>
-    <button class="btn-save" style="width: 100%; margin: 0;" onclick="closeModal()">Fechar</button>
+    <button class="btn-save" style="width: 100%; margin: 0;" id="btnConfirmModal">Fechar</button>
   </div>
 </div>
 
 <script>
-  // BANCO DE DADOS DOS 47 DIAS
+  // BANCO DE DADOS DA TRILHA DE 47 DIAS
   const trilhaData = [
     { day: 1, area: 'Cirurgia', cls: 'bg-cirurgia', topic: 'ATLS - ABCDE do trauma + Pneumotórax' },
     { day: 2, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Princípios do SUS e Regulamentação' },
@@ -460,4 +463,6 @@
     { day: 11, area: 'GO', cls: 'bg-ginecologia', topic: 'Síndromes Hipertensivas na Gestação e DHEG' },
     { day: 12, area: 'Clínica', cls: 'bg-clinica', topic: 'Diabetes Mellitus: Diagnóstico e Complicações' },
     { day: 13, area: 'Descanso', cls: 'bg-descanso', topic: 'Dia de Lazer' },
-    { day: 14, area: '
+    { day: 14, area: 'Simulado', cls: 'bg-simulado', topic: 'Revisão do Simulado + Caderno de Erros' },
+    { day: 15, area: 'Cirurgia', cls: 'bg-cirurgia', topic: 'Hérnias da Parede Abdominal' },
+    { day: 16, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Estudos Epidemiológicos: Coorte e Caso-Controle' },
