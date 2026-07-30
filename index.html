@@ -32,7 +32,6 @@ body{ background:var(--bg); color:var(--ink); min-height:100vh; }
 h1,h2,h3,.disp{ font-family:'Sora', sans-serif; }
 .mono{ font-family:'IBM Plex Mono', monospace; }
 button{ font-family:inherit; cursor:pointer; }
-a{ color:inherit; }
 
 .app{ display:flex; min-height:100vh; }
 
@@ -53,21 +52,16 @@ a{ color:inherit; }
 .nav-item svg{ width:18px; height:18px; flex-shrink:0; opacity:.85; }
 .nav-item:hover{ background:rgba(255,255,255,0.06); }
 .nav-item.active{ background:var(--sidebar-2); color:#fff; }
-.nav-item.active svg{ opacity:1; }
 
 .sidebar-bottom{ margin-top:auto; padding-top:16px; border-top:1px solid rgba(255,255,255,0.08); }
 .streak-box{ background:var(--sidebar-2); border-radius:12px; padding:12px 13px; display:flex; align-items:center; gap:10px; }
 .streak-num{ font-family:'Sora',sans-serif; font-weight:700; font-size:19px; color:#fff; }
 .streak-label{ font-size:10.5px; color:var(--sidebar-text-dim); line-height:1.3; }
-.exam-countdown-mini{ margin-top:10px; font-size:11px; color:var(--sidebar-text-dim); padding:0 2px; }
-.exam-countdown-mini b{ color:#fff; font-family:'IBM Plex Mono',monospace; }
 
 /* Main */
 .main{ flex:1; min-width:0; padding:26px 34px 60px; }
-.topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:10px; }
+.topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
 .topbar h1{ font-size:21px; font-weight:600; }
-.topbar .date-pill{ font-size:12.5px; color:var(--ink-2); background:var(--card); border:1px solid var(--line);
-  padding:6px 12px; border-radius:20px; }
 
 .view{ display:none; }
 .view.active{ display:block; }
@@ -75,52 +69,23 @@ a{ color:inherit; }
 .card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow); }
 .grid2{ display:grid; grid-template-columns:1.4fr 1fr; gap:16px; align-items:start; }
 
-/* Hoje / lesson card */
-.lesson-card{ position:relative; overflow:hidden; }
-.lesson-phase-tag{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:600;
-  padding:4px 10px; border-radius:20px; letter-spacing:.02em; text-transform:uppercase; }
 .lesson-title{ font-size:19px; font-weight:600; margin:12px 0 4px; }
 .lesson-sub{ font-size:13.5px; color:var(--ink-2); margin-bottom:16px; }
-.block-list{ display:flex; flex-direction:column; gap:0; margin-top:14px; }
 .block-item{ display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
 .block-item:first-child{ border-top:none; }
-.block-time{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-3); width:78px; flex-shrink:0; padding-top:1px; }
-.block-check{ width:20px; height:20px; border-radius:6px; border:1.5px solid var(--line-2); flex-shrink:0; margin-top:1px;
-  display:flex; align-items:center; justify-content:center; background:#fff; transition:.15s; }
+.block-time{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-3); width:78px; flex-shrink:0; }
+.block-check{ width:20px; height:20px; border-radius:6px; border:1.5px solid var(--line-2); flex-shrink:0; background:#fff; cursor:pointer; }
 .block-check.done{ background:var(--teal); border-color:var(--teal); }
-.block-check svg{ width:12px; height:12px; color:#fff; display:none; }
-.block-check.done svg{ display:block; }
-.block-text{ font-size:13.5px; line-height:1.5; flex:1; }
-.block-text b{ font-weight:600; }
 
 .log-box{ margin-top:18px; padding-top:16px; border-top:1px dashed var(--line-2); }
-.log-row{ display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+.log-row{ display:flex; gap:10px; align-items:flex-end; }
 .field{ display:flex; flex-direction:column; gap:4px; }
-.field label{ font-size:11.5px; color:var(--ink-2); font-weight:500; }
-.field input{ width:88px; height:36px; border-radius:9px; border:1px solid var(--line-2); padding:0 10px; font-size:14px; font-family:'IBM Plex Mono',monospace; }
-.field input:focus{ outline:none; border-color:var(--teal); box-shadow:0 0 0 3px var(--teal-bg); }
-.btn{ height:36px; padding:0 16px; border-radius:9px; border:1px solid var(--line-2); background:#fff; font-size:13px; font-weight:600; color:var(--ink); }
-.btn-primary{ background:var(--ink); color:#fff; border-color:var(--ink); }
-.btn-primary:hover{ background:#243357; }
-.save-msg{ font-size:12px; color:var(--teal); font-weight:600; margin-left:4px; opacity:0; transition:opacity .2s; }
-.save-msg.show{ opacity:1; }
+.field input{ width:88px; height:36px; border-radius:9px; border:1px solid var(--line-2); padding:0 10px; font-family:'IBM Plex Mono',monospace; }
+.btn{ height:36px; padding:0 16px; border-radius:9px; border:none; background:var(--ink); color:#fff; font-weight:600; cursor:pointer; }
 
-.ring-card{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px; }
-.ring-wrap{ position:relative; width:132px; height:132px; }
+.ring-card{ display:flex; flex-direction:column; align-items:center; text-align:center; }
+.ring-wrap{ position:relative; width:132px; height:132px; border-radius:50%; }
 .ring-num{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.ring-num .n{ font-family:'Sora',sans-serif; font-weight:700; font-size:24px; }
-.ring-num .l{ font-size:10px; color:var(--ink-2); }
-
-@media (max-width: 860px){
-  .app{ flex-direction:column; }
-  .sidebar{ width:100%; height:auto; position:relative; flex-direction:row; align-items:center; padding:14px 16px; }
-  .brand{ padding:0; flex:1; }
-  .nav{ flex-direction:row; }
-  .nav-item span{ display:none; }
-  .sidebar-bottom{ display:none; }
-  .main{ padding:20px 16px 40px; }
-  .grid2{ grid-template-columns:1fr; }
-}
 </style>
 </head>
 <body>
@@ -129,7 +94,7 @@ a{ color:inherit; }
   <aside class="sidebar">
     <div class="brand">
       <div class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
       </div>
       <div>
         <div class="brand-name">Trilha Revalida</div>
@@ -137,10 +102,23 @@ a{ color:inherit; }
       </div>
     </div>
 
+    <!-- NAVEGAÇÃO LATERAL RESTAURADA -->
     <nav class="nav">
-      <button class="nav-item active" data-view="hoje">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><path d="M9 22V12h6v10"></path></svg>
+      <button class="nav-item active" onclick="switchTab('hoje')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         <span>Hoje</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('trilha')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        <span>Trilha</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('revisoes')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span>Revisões</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('estatisticas')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Estatísticas</span>
       </button>
     </nav>
 
@@ -149,55 +127,45 @@ a{ color:inherit; }
         <div style="font-size:20px;">🔥</div>
         <div>
           <div class="streak-num" id="streakNum">0</div>
-          <div class="streak-label">dias seguidos<br>registrando estudo</div>
+          <div class="streak-label">dias seguidos</div>
         </div>
       </div>
-      <div class="exam-countdown-mini">Faltam <b id="miniCountdown">--</b> dias para o Revalida</div>
     </div>
   </aside>
 
   <main class="main">
-    <div class="topbar">
-      <h1 id="topTitle">Hoje</h1>
-      <div class="date-pill" id="topDate">--/--/----</div>
-    </div>
-
+    <!-- ABA HOJE -->
     <section class="view active" id="view-hoje">
+      <div class="topbar">
+        <h1>Hoje</h1>
+      </div>
       <div class="grid2">
-        <div class="card lesson-card">
-          <span class="lesson-phase-tag" style="background:var(--coral-bg); color:var(--coral);">Fase 1 · Estudo</span>
+        <div class="card">
           <div class="lesson-title">Cirurgia Geral</div>
           <div class="lesson-sub">ATLS - ABCDE do trauma + pneumotórax hipertensivo</div>
           
-          <div class="block-list">
-            <div class="block-item">
-              <div class="block-time">10h00</div>
-              <button class="block-check" data-blockkey="b0" aria-label="Marcar bloco concluído">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </button>
-              <div class="block-text">Anki (30-40min) + 15-20 questões Caderno de Erros</div>
-            </div>
-            <div class="block-item">
-              <div class="block-time">11h-17h</div>
-              <button class="block-check" data-blockkey="b1" aria-label="Marcar bloco concluído">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </button>
-              <div class="block-text"><b>Cirurgia Geral</b> — Meta: 30-40 questões x2 blocos</div>
-            </div>
+          <div class="block-item">
+            <div class="block-time">10h00</div>
+            <button class="block-check" data-blockkey="b0" onclick="toggleBlock('b0')"></button>
+            <div>Anki (30-40min) + 15-20 questões Caderno de Erros</div>
+          </div>
+          <div class="block-item">
+            <div class="block-time">11h-17h</div>
+            <button class="block-check" data-blockkey="b1" onclick="toggleBlock('b1')"></button>
+            <div><b>Cirurgia Geral</b> — Meta: 30-40 questões x2 blocos</div>
           </div>
 
           <div class="log-box">
             <div class="log-row">
               <div class="field">
                 <label>Questões feitas</label>
-                <input type="number" min="0" id="inpQ" value="">
+                <input type="number" min="0" id="inpQ">
               </div>
               <div class="field">
                 <label>Acertos</label>
-                <input type="number" min="0" id="inpA" value="">
+                <input type="number" min="0" id="inpA">
               </div>
-              <button class="btn btn-primary" id="btnSaveLog">Salvar na Nuvem</button>
-              <span class="save-msg" id="saveMsg">Salvo!</span>
+              <button class="btn" id="btnSaveLog" onclick="saveData()">Salvar na Nuvem</button>
             </div>
           </div>
         </div>
@@ -206,129 +174,103 @@ a{ color:inherit; }
           <div class="ring-wrap" id="ringWrap" style="background:conic-gradient(#D2D8E4 0deg, #EAEDF3 0deg);">
             <div style="position:absolute; inset:8px; border-radius:50%; background:#fff;"></div>
             <div class="ring-num">
-              <div class="n mono" id="ringPct">--%</div>
-              <div class="l" id="ringSub">não registrado</div>
+              <div class="n mono" id="ringPct" style="font-weight:700; font-size:24px;">--%</div>
+              <div id="ringSub" style="font-size:10px; color:var(--ink-2);">não registrado</div>
             </div>
           </div>
-          <div style="font-size:12.5px; color:var(--ink-2); margin-top:4px;">Rendimento de hoje</div>
         </div>
       </div>
+    </section>
+
+    <!-- ABA TRILHA -->
+    <section class="view" id="view-trilha">
+      <div class="topbar"><h1>Trilha Completa</h1></div>
+      <div class="card"><p>Cronograma de tópicos e programação semanal.</p></div>
+    </section>
+
+    <!-- ABA REVISÕES -->
+    <section class="view" id="view-revisoes">
+      <div class="topbar"><h1>Revisões Espaçadas</h1></div>
+      <div class="card"><p>Controle de ciclos R1, R2 e R3.</p></div>
+    </section>
+
+    <!-- ABA ESTATÍSTICAS -->
+    <section class="view" id="view-estatisticas">
+      <div class="topbar"><h1>Estatísticas e Desempenho</h1></div>
+      <div class="card"><p>Acompanhamento de porcentagens e rendimento geral.</p></div>
     </section>
   </main>
 </div>
 
 <script>
-// ==========================================
-// CONFIGURAÇÃO DO SUPABASE
-// ==========================================
 const SUPABASE_URL = 'https://hizgqlftbejocvrgugl.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_wx1FRjZJCFt27lAF45dzfQ_OUSWn_BR'; // Subsitua pelo valor que começa com sb_publishable_...
+const SUPABASE_KEY = 'sb_publishable_wx1FRjZJCFt27lAF45dzfQ_OUSWn_BR';
 
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-// ID único para sincronizar todos os seus aparelhos
 const USER_DATA_ID = 'meu_progresso_revalida';
 
-// Estado local da aplicação
-let appData = {
-  blocks: {},
-  questoes: 0,
-  acertos: 0
-};
+let appData = { blocks: {}, questoes: 0, acertos: 0 };
 
-// Elementos da tela
-const inpQ = document.getElementById('inpQ');
-const inpA = document.getElementById('inpA');
-const btnSave = document.getElementById('btnSaveLog');
-const saveMsg = document.getElementById('saveMsg');
-const ringPct = document.getElementById('ringPct');
-const ringSub = document.getElementById('ringSub');
-const ringWrap = document.getElementById('ringWrap');
-
-// Carregar dados ao iniciar
 async function loadData() {
   try {
-    const { data, error } = await _supabase
-      .from('progresso_estudos')
-      .select('data')
-      .eq('id', USER_DATA_ID)
-      .single();
-
+    const { data } = await _supabase.from('progresso_estudos').select('data').eq('id', USER_DATA_ID).single();
     if (data && data.data) {
       appData = data.data;
       renderState();
     }
-  } catch (err) {
-    console.log('Sem dados remotos ainda, iniciando do zero.');
-  }
+  } catch (err) {}
 }
 
-// Salvar dados na nuvem Supabase
 async function saveData() {
-  appData.questoes = parseInt(inpQ.value) || 0;
-  appData.acertos = parseInt(inpA.value) || 0;
+  appData.questoes = parseInt(document.getElementById('inpQ').value) || 0;
+  appData.acertos = parseInt(document.getElementById('inpA').value) || 0;
 
   renderState();
 
-  btnSave.innerText = 'Salvando...';
-  
   const { error } = await _supabase
     .from('progresso_estudos')
     .upsert({ id: USER_DATA_ID, data: appData, updated_at: new Date() });
 
-  btnSave.innerText = 'Salvar na Nuvem';
-
   if (!error) {
-    saveMsg.classList.add('show');
-    setTimeout(() => saveMsg.classList.remove('show'), 2000);
+    alert('Dados salvos na nuvem com sucesso!');
   } else {
-    alert('Erro ao salvar na nuvem! Verifique se copiou a chave Publishable corretamente.');
+    alert('Erro ao salvar no Supabase! Verifique se desativou o RLS na tabela progresso_estudos.');
   }
 }
 
-// Atualizar interface gráfica
 function renderState() {
-  inpQ.value = appData.questoes || '';
-  inpA.value = appData.acertos || '';
+  document.getElementById('inpQ').value = appData.questoes || '';
+  document.getElementById('inpA').value = appData.acertos || '';
 
-  // Atualizar blocos (checkmarks)
   document.querySelectorAll('.block-check').forEach(btn => {
     const key = btn.dataset.blockkey;
-    if (appData.blocks && appData.blocks[key]) {
-      btn.classList.add('done');
-    } else {
-      btn.classList.remove('done');
-    }
+    if (appData.blocks && appData.blocks[key]) btn.classList.add('done');
+    else btn.classList.remove('done');
   });
 
-  // Atualizar Rosca de Rendimento
   if (appData.questoes > 0) {
     const pct = Math.round((appData.acertos / appData.questoes) * 100);
-    ringPct.innerText = `${pct}%`;
-    ringSub.innerText = `${appData.acertos} / ${appData.questoes}`;
+    document.getElementById('ringPct').innerText = `${pct}%`;
+    document.getElementById('ringSub').innerText = `${appData.acertos} / ${appData.questoes}`;
     const deg = Math.round((pct / 100) * 360);
-    ringWrap.style.background = `conic-gradient(#17A398 ${deg}deg, #EAEDF3 ${deg}deg)`;
-  } else {
-    ringPct.innerText = '--%';
-    ringSub.innerText = 'não registrado';
-    ringWrap.style.background = `conic-gradient(#D2D8E4 0deg, #EAEDF3 0deg)`;
+    document.getElementById('ringWrap').style.background = `conic-gradient(#17A398 ${deg}deg, #EAEDF3 ${deg}deg)`;
   }
 }
 
-// Event Listeners
-document.querySelectorAll('.block-check').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const key = btn.dataset.blockkey;
-    if (!appData.blocks) appData.blocks = {};
-    appData.blocks[key] = !appData.blocks[key];
-    renderState();
-    saveData();
-  });
-});
+function toggleBlock(key) {
+  if (!appData.blocks) appData.blocks = {};
+  appData.blocks[key] = !appData.blocks[key];
+  renderState();
+  saveData();
+}
 
-btnSave.addEventListener('click', saveData);
+function switchTab(tabId) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`view-${tabId}`).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
 
-// Inicializar na abertura
 loadData();
 </script>
 </body>
