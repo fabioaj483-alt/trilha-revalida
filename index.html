@@ -5,13 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trilha Revalida</title>
 
-<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- Chart.js carregado de forma segura -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
 <style>
 :root {
@@ -78,15 +74,16 @@ button { font-family: inherit; cursor: pointer; border: none; }
 
 .nav-item {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 14px; border-radius: 8px;
+  padding: 12px 14px; border-radius: 8px;
   color: var(--sidebar-text); background: transparent;
   font-size: 14px; font-weight: 500; text-align: left; width: 100%;
   cursor: pointer;
+  user-select: none;
 }
 
 .nav-item:hover { background: var(--sidebar-hover); color: #FFFFFF; }
 .nav-item.active { background: var(--sidebar-active); color: #FFFFFF; }
-.nav-item svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; pointer-events: none; }
+.nav-item * { pointer-events: none; }
 
 .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
 
@@ -157,6 +154,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
 
 .task-time { width: 70px; color: var(--text-muted); font-size: 12px; padding-top: 2px; flex-shrink: 0; }
 
+/* CHECKBOX INTERATIVO */
 .task-check {
   width: 22px; height: 22px; border-radius: 6px;
   border: 2px solid #CBD5E1; background: #FFF;
@@ -178,7 +176,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
   font-weight: 600; margin-top: 16px;
 }
 
-/* TRILHA (MAPA) */
+/* TRILHA (MAPA DE BOLINHAS) */
 .date-pill {
   display: inline-block; background: #FFFFFF;
   padding: 6px 14px; border-radius: 20px;
@@ -231,8 +229,6 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .bg-simulado { background-color: var(--c-simulado); }
 .bg-descanso { background-color: var(--c-descanso); }
 
-.chart-wrapper { position: relative; width: 100%; height: 260px; margin-top: 10px; }
-
 /* MODAL DE DETALHES */
 .modal-overlay {
   display: none; position: fixed;
@@ -269,23 +265,23 @@ button { font-family: inherit; cursor: pointer; border: none; }
     </div>
 
     <nav class="nav">
-      <button class="nav-item active" data-target="hoje">
-        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+      <button class="nav-item active" onclick="switchTab('hoje', this)">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         <span>Hoje</span>
       </button>
 
-      <button class="nav-item" data-target="trilha">
-        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      <button class="nav-item" onclick="switchTab('trilha', this)">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
         <span>Trilha (47 dias)</span>
       </button>
 
-      <button class="nav-item" data-target="estatisticas">
-        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      <button class="nav-item" onclick="switchTab('estatisticas', this)">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
         <span>Estatísticas</span>
       </button>
 
-      <button class="nav-item" data-target="revisoes">
-        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+      <button class="nav-item" onclick="switchTab('revisoes', this)">
+        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span>Revisões</span>
       </button>
     </nav>
@@ -323,22 +319,22 @@ button { font-family: inherit; cursor: pointer; border: none; }
         <div class="task-list">
           <div class="task-row">
             <div class="task-time">10h00</div>
-            <button class="task-check" data-blockkey="b0"></button>
+            <button class="task-check" onclick="toggleTask('b0', this)"></button>
             <div>Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)</div>
           </div>
           <div class="task-row">
             <div class="task-time">11h-17h</div>
-            <button class="task-check" data-blockkey="b1"></button>
+            <button class="task-check" onclick="toggleTask('b1', this)"></button>
             <div><b>Cirurgia Geral</b> — ATLS - ABCDE do trauma + pneumotórax hipertensivo. Meta: 30-40 questões x2 blocos (60-80 no dia)</div>
           </div>
           <div class="task-row">
             <div class="task-time">17h-18h30</div>
-            <button class="task-check" data-blockkey="b2"></button>
+            <button class="task-check" onclick="toggleTask('b2', this)"></button>
             <div>Alimentar Caderno de Erros + criar flashcards novos no Anki</div>
           </div>
           <div class="task-row">
             <div class="task-time">18h30-19h15</div>
-            <button class="task-check" data-blockkey="b3"></button>
+            <button class="task-check" onclick="toggleTask('b3', this)"></button>
             <div>10-15 questões rápidas de revisão geral</div>
           </div>
         </div>
@@ -346,15 +342,15 @@ button { font-family: inherit; cursor: pointer; border: none; }
         <div class="inputs-flex">
           <div class="input-field">
             <label style="font-size: 12px; color: var(--text-muted);">Questões feitas</label>
-            <input type="number" id="inpQ" min="0">
+            <input type="number" id="inpQ" oninput="calculatePct()" min="0">
           </div>
           <div class="input-field">
             <label style="font-size: 12px; color: var(--text-muted);">Acertos</label>
-            <input type="number" id="inpA" min="0">
+            <input type="number" id="inpA" oninput="calculatePct()" min="0">
           </div>
         </div>
 
-        <button class="btn-save" id="btnSaveData">Salvar Progresso</button>
+        <button class="btn-save" onclick="saveData()">Salvar Progresso</button>
       </div>
     </section>
 
@@ -375,19 +371,14 @@ button { font-family: inherit; cursor: pointer; border: none; }
       <div class="card">
         <div class="trail-map">
           <div class="trail-row">
-            <div class="trail-node bg-cirurgia active-day" data-day="1">1</div>
-            <div class="trail-node bg-preventiva" data-day="2">2</div>
-            <div class="trail-node bg-pediatria" data-day="3">3</div>
+            <div class="trail-node bg-cirurgia active-day" onclick="openModal('1', 'Cirurgia Geral', 'ATLS - ABCDE do trauma')">1</div>
+            <div class="trail-node bg-preventiva" onclick="openModal('2', 'Medicina Preventiva', 'SUS: Princípios e Diretrizes')">2</div>
+            <div class="trail-node bg-pediatria" onclick="openModal('3', 'Pediatria', 'Crescimento e Desenvolvimento')">3</div>
           </div>
           <div class="trail-row">
-            <div class="trail-node bg-ginecologia" data-day="14">14</div>
-            <div class="trail-node bg-clinica" data-day="13">13</div>
-            <div class="trail-node bg-descanso" data-day="12">12</div>
-          </div>
-          <div class="trail-row">
-            <div class="trail-node bg-cirurgia" data-day="15">15</div>
-            <div class="trail-node bg-preventiva" data-day="16">16</div>
-            <div class="trail-node bg-pediatria" data-day="17">17</div>
+            <div class="trail-node bg-ginecologia" onclick="openModal('14', 'GO', 'Pré-natal e Sangramentos')">14</div>
+            <div class="trail-node bg-clinica" onclick="openModal('13', 'Clínica Médica', 'HAS e Crises Hipertensivas')">13</div>
+            <div class="trail-node bg-descanso" onclick="openModal('12', 'Descanso', 'Dia Livre para descanso')">12</div>
           </div>
         </div>
       </div>
@@ -397,10 +388,8 @@ button { font-family: inherit; cursor: pointer; border: none; }
     <section class="view" id="view-estatisticas">
       <div class="topbar"><h1>Estatísticas</h1></div>
       <div class="card">
-        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 12px;">Evolução de Desempenho em Questões (%)</h3>
-        <div class="chart-wrapper">
-          <canvas id="performanceChart"></canvas>
-        </div>
+        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">Progresso Geral</h3>
+        <p style="color: var(--text-muted); font-size: 13.5px;">Resumo dos dados preenchidos diariamente.</p>
       </div>
     </section>
 
@@ -419,7 +408,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
 <!-- MODAL FLUTUANTE DE DETALHES -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal-card">
-    <button class="modal-close" id="btnCloseModal">&times;</button>
+    <button class="modal-close" onclick="closeModal()">&times;</button>
     <span class="badge-phase" id="mPhase">FASE 1</span>
     <h2 id="mArea" style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">—</h2>
     <p id="mTopic" style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 16px;">—</p>
@@ -427,163 +416,105 @@ button { font-family: inherit; cursor: pointer; border: none; }
 </div>
 
 <script>
-// Dados do App salvos no LocalStorage
-let appData = {
-  blocks: {},
-  questoes: 0,
-  acertos: 0,
-  streak: 1
+// OBJETO DE ESTADO
+let appState = {
+  b0: false, b1: false, b2: false, b3: false,
+  q: 0, a: 0
 };
 
-// Carregar dados salvos ao iniciar
-function loadLocalData() {
-  const saved = localStorage.getItem('revalida_app_data');
-  if (saved) {
-    try {
-      appData = JSON.parse(saved);
-    } catch(e) {}
+// MUDAR DE ABA
+function switchTab(viewId, element) {
+  // Desativa todas as abas
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  // Ativa a escolhida
+  document.getElementById('view-' + viewId).classList.add('active');
+  element.classList.add('active');
+}
+
+// TOGGLE TAREFA (CHECKBOX)
+function toggleTask(key, btn) {
+  appState[key] = !appState[key];
+  if (appState[key]) {
+    btn.classList.add('done');
+  } else {
+    btn.classList.remove('done');
   }
+  updateCompletedCounter();
 }
 
-function saveData() {
-  localStorage.setItem('revalida_app_data', JSON.stringify(appData));
+// ATUALIZAR CONTADOR DE TAREFAS
+function updateCompletedCounter() {
+  let done = 0;
+  if (appState.b0) done++;
+  if (appState.b1) done++;
+  if (appState.b2) done++;
+  if (appState.b3) done++;
+
+  document.getElementById('tasksBadge').innerText = done + '/4 concluídas';
 }
 
-// Atualizar interface
-function updateUI() {
-  const inpQ = document.getElementById('inpQ');
-  const inpA = document.getElementById('inpA');
-  
-  if (inpQ) inpQ.value = appData.questoes || '';
-  if (inpA) inpA.value = appData.acertos || '';
-
-  let doneCount = 0;
-  document.querySelectorAll('.task-check').forEach(btn => {
-    const key = btn.dataset.blockkey;
-    if (appData.blocks && appData.blocks[key]) {
-      btn.classList.add('done');
-      doneCount++;
-    } else {
-      btn.classList.remove('done');
-    }
-  });
-
-  const tasksBadge = document.getElementById('tasksBadge');
-  if (tasksBadge) tasksBadge.innerText = `${doneCount}/4 concluídas`;
-
-  calculatePct();
-}
-
+// CALCULAR PORCENTAGEM
 function calculatePct() {
   const q = parseInt(document.getElementById('inpQ').value) || 0;
   const a = parseInt(document.getElementById('inpA').value) || 0;
+  appState.q = q;
+  appState.a = a;
+
   let pct = 0;
   if (q > 0) {
     pct = Math.round((a / q) * 100);
   }
-  const pctBadge = document.getElementById('pctBadge');
-  if (pctBadge) pctBadge.innerText = `${pct}% acertos`;
+  document.getElementById('pctBadge').innerText = pct + '% acertos';
 }
 
-// Eventos acionados após o carregamento do DOM
-document.addEventListener('DOMContentLoaded', () => {
-  loadLocalData();
-  updateUI();
-
-  // 1. Troca de Abas
-  document.querySelectorAll('.nav-item').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const target = btn.dataset.target;
-
-      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-
-      btn.classList.add('active');
-      const targetView = document.getElementById(`view-${target}`);
-      if (targetView) targetView.classList.add('active');
-
-      if (target === 'estatisticas') {
-        renderChart();
-      }
-    });
-  });
-
-  // 2. Cliques nos quadradinhos de tarefas (Checkboxes)
-  document.querySelectorAll('.task-check').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const key = btn.dataset.blockkey;
-      if (!appData.blocks) appData.blocks = {};
-      appData.blocks[key] = !appData.blocks[key];
-      saveData();
-      updateUI();
-    });
-  });
-
-  // 3. Inputs de número de questões/acertos
-  document.getElementById('inpQ').addEventListener('input', () => {
-    appData.questoes = parseInt(document.getElementById('inpQ').value) || 0;
-    calculatePct();
-  });
-
-  document.getElementById('inpA').addEventListener('input', () => {
-    appData.acertos = parseInt(document.getElementById('inpA').value) || 0;
-    calculatePct();
-  });
-
-  // 4. Botão Salvar
-  document.getElementById('btnSaveData').addEventListener('click', () => {
-    saveData();
-    alert('Progresso salvo com sucesso!');
-  });
-
-  // 5. Cliques nas bolinhas da Trilha
-  document.querySelectorAll('.trail-node').forEach(node => {
-    node.addEventListener('click', () => {
-      const day = node.dataset.day;
-      document.getElementById('mPhase').innerText = `Dia ${day} · Fase 1`;
-      document.getElementById('mArea').innerText = node.innerText;
-      document.getElementById('mTopic').innerText = 'Revisão de Conteúdo e Exercícios Práticos';
-      document.getElementById('dayModal').classList.add('active');
-    });
-  });
-
-  // 6. Fechar Modal
-  document.getElementById('btnCloseModal').addEventListener('click', () => {
-    document.getElementById('dayModal').classList.remove('active');
-  });
-});
-
-// Renderizar Gráfico apenas quando necessário
-let chartInstance = null;
-function renderChart() {
-  if (typeof Chart === 'undefined') return;
-  const ctx = document.getElementById('performanceChart');
-  if (!ctx) return;
-
-  if (chartInstance) chartInstance.destroy();
-
-  chartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5'],
-      datasets: [{
-        label: '% de Acertos',
-        data: [50, 60, 65, 70, 75],
-        borderColor: '#3B82F6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        fill: true,
-        tension: 0.3
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: { min: 0, max: 100 }
-      }
-    }
-  });
+// SALVAR NO NAVEGADOR
+function saveData() {
+  localStorage.setItem('trilha_state', JSON.stringify(appState));
+  alert('Progresso salvo com sucesso!');
 }
+
+// CARREGAR DADOS SALVOS
+function loadData() {
+  const saved = localStorage.getItem('trilha_state');
+  if (saved) {
+    try {
+      appState = JSON.parse(saved);
+      
+      // Atualizar Checkboxes
+      const buttons = document.querySelectorAll('.task-check');
+      if (appState.b0) buttons[0].classList.add('done');
+      if (appState.b1) buttons[1].classList.add('done');
+      if (appState.b2) buttons[2].classList.add('done');
+      if (appState.b3) buttons[3].classList.add('done');
+
+      // Atualizar Inputs
+      document.getElementById('inpQ').value = appState.q || '';
+      document.getElementById('inpA').value = appState.a || '';
+
+      updateCompletedCounter();
+      calculatePct();
+    } catch(e) {}
+  }
+}
+
+// MODAL
+function openModal(day, area, topic) {
+  document.getElementById('mPhase').innerText = 'Dia ' + day + ' · Fase 1';
+  document.getElementById('mArea').innerText = area;
+  document.getElementById('mTopic').innerText = topic;
+  document.getElementById('dayModal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('dayModal').classList.remove('active');
+}
+
+// Inicializar ao carregar a página
+window.onload = function() {
+  loadData();
+};
 </script>
 
 </body>
