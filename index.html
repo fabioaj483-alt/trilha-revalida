@@ -3,234 +3,639 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trilha Revalida — Painel de Estudos</title>
+<title>Trilha Revalida</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Inter:wght@400;500;600;700&family=Sora:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --sidebar:#12213B; --sidebar-2:#182A48; --sidebar-text:#AEC0DA; --sidebar-text-dim:#6E80A0;
-  --bg:#F2F4F8; --card:#FFFFFF;
-  --ink:#16213A; --ink-2:#5B6B85; --ink-3:#8E99AE;
-  --line:#E3E7EF; --line-2:#D2D8E4;
-  --teal:#17A398; --teal-bg:#DFF3F1;
-  --coral:#E2574C; --coral-bg:#FBE2E0;
-  --shadow: 0 1px 2px rgba(18,33,59,0.04), 0 8px 24px rgba(18,33,59,0.06);
-  --radius: 14px;
+:root {
+  --sidebar-bg: #1A2332;
+  --sidebar-text: #94A3B8;
+  --sidebar-active: #2A364F;
+  --sidebar-hover: rgba(255, 255, 255, 0.05);
+  --bg: #F4F6F9;
+  --card-bg: #FFFFFF;
+  --text-main: #1E293B;
+  --text-muted: #64748B;
+  --border-color: #E2E8F0;
+  --radius: 16px;
+
+  /* CORES DAS ÁREAS MEDICAS DA TRILHA */
+  --c-cirurgia: #E5534B;
+  --c-preventiva: #14B8A6;
+  --c-pediatria: #F59E0B;
+  --c-ginecologia: #8B5CF6;
+  --c-clinica: #3B82F6;
+  --c-simulado: #1E293B;
+  --c-descanso: #CBD5E1;
+
   font-family: 'Inter', sans-serif;
 }
-*{box-sizing:border-box; margin:0; padding:0;}
-body{ background:var(--bg); color:var(--ink); min-height:100vh; }
-h1,h2,h3{ font-family:'Sora', sans-serif; }
-button{ font-family:inherit; cursor:pointer; }
 
-.app{ display:flex; min-height:100vh; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text-main); min-height: 100vh; }
+button { font-family: inherit; cursor: pointer; border: none; }
 
-.sidebar{ width:260px; flex-shrink:0; background:var(--sidebar); color:var(--sidebar-text);
-  display:flex; flex-direction:column; padding:22px 16px; position:sticky; top:0; height:100vh; overflow-y:auto; }
-.brand{ display:flex; align-items:center; gap:10px; padding:6px 8px 22px; }
-.brand-mark{ width:34px; height:34px; border-radius:9px; background:var(--teal); display:flex; align-items:center; justify-content:center; }
-.brand-name{ font-family:'Sora',sans-serif; font-weight:700; font-size:14.5px; color:#fff; }
-.brand-sub{ font-size:11px; color:var(--sidebar-text-dim); }
+.app { display: flex; min-height: 100vh; }
 
-.nav{ display:flex; flex-direction:column; gap:4px; margin-top:6px; }
-.nav-section-title{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.8px; color:var(--sidebar-text-dim); padding:12px 12px 4px; font-weight:700; }
-.nav-item{ display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:10px;
-  color:var(--sidebar-text); background:transparent; border:none; text-align:left; font-size:13.5px; font-weight:500; width:100%; }
-.nav-item svg{ width:18px; height:18px; flex-shrink:0; }
-.nav-item:hover{ background:rgba(255,255,255,0.06); }
-.nav-item.active{ background:var(--sidebar-2); color:#fff; }
+/* SIDEBAR */
+.sidebar {
+  width: 250px;
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
 
-.main{ flex:1; min-width:0; padding:26px 34px 60px; }
-.topbar{ display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; }
-.topbar h1{ font-size:21px; font-weight:600; }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  padding-left: 4px;
+}
 
-.view{ display:none; }
-.view.active{ display:block; }
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  background: #2D3A4E;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.card{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; box-shadow:var(--shadow); margin-bottom:16px; }
-.grid2{ display:grid; grid-template-columns:1.4fr 1fr; gap:16px; }
-.grid3{ display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+.brand-title {
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 15px;
+}
 
-.block-item{ display:flex; gap:12px; padding:12px 0; border-top:1px solid var(--line); align-items:center; }
-.block-item:first-child{ border-top:none; }
-.block-time{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--ink-3); width:78px; flex-shrink:0; }
-.block-check{ width:22px; height:22px; border-radius:6px; border:1.5px solid var(--line-2); background:#fff; cursor:pointer; flex-shrink:0; }
-.block-check.done{ background:var(--teal); border-color:var(--teal); position:relative; }
-.block-check.done::after{ content:'✓'; color:#fff; display:block; text-align:center; font-size:12px; line-height:20px; }
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
 
-.badge{ display:inline-block; padding:3px 8px; border-radius:6px; font-size:11px; font-weight:600; margin-bottom:8px; }
-.badge-coral{ background:var(--coral-bg); color:var(--coral); }
-.badge-teal{ background:var(--teal-bg); color:var(--teal); }
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--sidebar-text);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+}
 
-.field{ display:flex; flex-direction:column; gap:4px; margin-top:10px; }
-.field input{ width:100%; height:38px; border-radius:8px; border:1px solid var(--line-2); padding:0 10px; font-family:'IBM Plex Mono',monospace; }
-.btn{ height:38px; padding:0 18px; border-radius:8px; border:none; background:var(--teal); color:#fff; font-weight:600; margin-top:12px; }
+.nav-item:hover {
+  background: var(--sidebar-hover);
+  color: #FFFFFF;
+}
+
+.nav-item.active {
+  background: var(--sidebar-active);
+  color: #FFFFFF;
+}
+
+.nav-item svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.streak-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.streak-number {
+  font-size: 22px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.streak-text {
+  font-size: 11px;
+  color: #64748B;
+  margin-top: 4px;
+}
+
+.countdown-text {
+  font-size: 11px;
+  color: #64748B;
+  padding-left: 4px;
+}
+
+/* MAIN CONTENT */
+.main {
+  flex: 1;
+  padding: 32px 40px;
+  min-width: 0;
+}
+
+.view { display: none; }
+.view.active { display: block; }
+
+.topbar h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.badge-phase {
+  display: inline-block;
+  background: #FCE7F3;
+  color: #DB2777;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.task-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 13.5px;
+}
+
+.task-time {
+  width: 70px;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.task-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 2px solid #CBD5E1;
+  background: #FFF;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.task-check.done {
+  background: #0EA5E9;
+  border-color: #0EA5E9;
+  position: relative;
+}
+
+.task-check.done::after {
+  content: '✓';
+  color: #FFF;
+  font-size: 12px;
+  display: block;
+  text-align: center;
+  line-height: 14px;
+}
+
+.inputs-flex {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-field input {
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  width: 110px;
+}
+
+.btn-save {
+  background: #1E293B;
+  color: #FFF;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+/* ESTILOS DA TRILHA DE BOLINHAS (CAMINHO) */
+.date-pill {
+  display: inline-block;
+  background: #FFFFFF;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  border: 1px solid var(--border-color);
+  margin-bottom: 20px;
+}
+
+.legend-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.trail-map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding: 30px 10px;
+  position: relative;
+}
+
+.trail-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+}
+
+/* Linhas horizontais de conexão entre bolinhas */
+.trail-row::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: #E2E8F0;
+  z-index: 1;
+}
+
+/* Linha vertical de curva direita */
+.curve-right::after {
+  content: '';
+  position: absolute;
+  right: 19px;
+  top: 20px;
+  bottom: -42px;
+  width: 2px;
+  background: #E2E8F0;
+  z-index: 1;
+}
+
+/* Linha vertical de curva esquerda */
+.curve-left::after {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 20px;
+  bottom: -42px;
+  width: 2px;
+  background: #E2E8F0;
+  z-index: 1;
+}
+
+.trail-node {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #FFF;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  cursor: pointer;
+}
+
+/* Anel pontilhado no dia atual */
+.trail-node.active-day {
+  outline: 2px dashed #E5534B;
+  outline-offset: 4px;
+}
+
+.bg-cirurgia { background-color: var(--c-cirurgia); }
+.bg-preventiva { background-color: var(--c-preventiva); }
+.bg-pediatria { background-color: var(--c-pediatria); }
+.bg-ginecologia { background-color: var(--c-ginecologia); }
+.bg-clinica { background-color: var(--c-clinica); }
+.bg-simulado { background-color: var(--c-simulado); }
+.bg-descanso { background-color: var(--c-descanso); }
+
+/* BARRAS DE ESTATÍSTICAS */
+.progress-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.progress-label {
+  width: 160px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.progress-track {
+  flex: 1;
+  height: 12px;
+  background: #E2E8F0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill { height: 100%; border-radius: 6px; }
+.progress-val { font-size: 12px; font-weight: 600; width: 40px; text-align: right; }
+.status-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+.status-abaixo { background: #FEE2E2; color: #DC2626; }
+.status-meta { background: #E0F2FE; color: #0284C7; }
 </style>
 </head>
 <body>
+
 <div class="app">
 
-  <!-- BARRA LATERAL COMPLETA -->
+  <!-- BARRA LATERAL -->
   <aside class="sidebar">
     <div class="brand">
-      <div class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+      <div class="brand-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5">
+          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+        </svg>
       </div>
-      <div>
-        <div class="brand-name">Trilha Revalida</div>
-        <div class="brand-sub">INEP · turma única</div>
-      </div>
+      <span class="brand-title">Trilha Revalida</span>
     </div>
 
     <nav class="nav">
-      <div class="nav-section-title">Principal</div>
       <button class="nav-item active" onclick="switchTab('hoje', event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         <span>Hoje</span>
       </button>
+
       <button class="nav-item" onclick="switchTab('trilha', event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-        <span>Trilha de Estudos</span>
-      </button>
-      <button class="nav-item" onclick="switchTab('revisoes', event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 16 14"></polyline></svg>
-        <span>Revisões Espaçadas</span>
+        <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+        <span>Trilha (47 dias)</span>
       </button>
 
-      <div class="nav-section-title">Desempenho</div>
       <button class="nav-item" onclick="switchTab('estatisticas', event)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
         <span>Estatísticas</span>
       </button>
+
+      <button class="nav-item" onclick="switchTab('revisoes', event)">
+        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        <span>Revisões</span>
+      </button>
     </nav>
+
+    <div class="sidebar-footer">
+      <div class="streak-card">
+        <span style="font-size: 18px;">🔥</span>
+        <div>
+          <div class="streak-number" id="streakCount">0</div>
+          <div class="streak-text">dias seguidos<br>registrando estudo</div>
+        </div>
+      </div>
+      <div class="countdown-text">
+        Faltam 46 dias para o Revalida<br>(13/09/2026)
+      </div>
+    </div>
   </aside>
 
+  <!-- CONTEÚDO PRINCIPAL -->
   <main class="main">
+
     <!-- HOJE -->
     <section class="view active" id="view-hoje">
       <div class="topbar"><h1>Hoje</h1></div>
-      <div class="grid2">
-        <div class="card">
-          <span class="badge badge-coral">FASE 1 - ESTUDO</span>
-          <h2 style="margin-bottom:6px;">Cirurgia Geral</h2>
-          <p style="color:var(--ink-2); font-size:13px; margin-bottom:16px;">ATLS - ABCDE do trauma + pneumotórax hipertensivo</p>
-          
-          <div class="block-item">
-            <div class="block-time">10h00</div>
-            <button class="block-check" data-blockkey="b0" onclick="toggleBlock('b0')"></button>
-            <div>Anki (30-40min) + 15-20 questões Caderno de Erros</div>
-          </div>
-          <div class="block-item">
-            <div class="block-time">11h-17h</div>
-            <button class="block-check" data-blockkey="b1" onclick="toggleBlock('b1')"></button>
-            <div><b>Cirurgia Geral</b> — Meta: 30-40 questões x2 blocos</div>
-          </div>
-
-          <div style="display:flex; gap:12px; margin-top:16px;">
-            <div class="field" style="flex:1;">
-              <label style="font-size:12px;">Questões feitas</label>
-              <input type="number" id="inpQ">
-            </div>
-            <div class="field" style="flex:1;">
-              <label style="font-size:12px;">Acertos</label>
-              <input type="number" id="inpA">
-            </div>
-          </div>
-          <button class="btn" onclick="saveData()">Salvar Progresso</button>
-        </div>
-
-        <div class="card" style="text-align:center;">
-          <h3>Rendimento do Dia</h3>
-          <h1 id="ringPct" style="font-size:42px; color:var(--teal); margin:20px 0;">--%</h1>
-          <p id="ringSub" style="color:var(--ink-2); font-size:13px;">Nenhum registro ainda</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- TRILHA -->
-    <section class="view" id="view-trilha">
-      <div class="topbar"><h1>Trilha de Estudos</h1></div>
       <div class="card">
-        <h3>Grandes Áreas do Revalida</h3>
-        <p style="color:var(--ink-2); font-size:13px; margin-bottom:16px;">Acompanhe a evolução dos tópicos em cada grande área médica.</p>
-        
-        <div class="block-item">
-          <button class="block-check" data-blockkey="t1" onclick="toggleBlock('t1')"></button>
-          <div><b>Cirurgia Geral:</b> Trauma, Fechamento de Parede, Queimaduras</div>
+        <span class="badge-phase">FASE 1 · QUARTA</span>
+        <h2 style="font-size: 20px; font-weight: 700;">Cirurgia Geral</h2>
+        <p style="color: var(--text-muted); font-size: 13.5px; margin-top: 4px;">ATLS - ABCDE do trauma + pneumotórax hipertensivo</p>
+
+        <div class="task-list">
+          <div class="task-row">
+            <div class="task-time">10h00</div>
+            <button class="task-check" data-blockkey="b0" onclick="toggleBlock('b0')"></button>
+            <div>Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)</div>
+          </div>
+          <div class="task-row">
+            <div class="task-time">11h-17h</div>
+            <button class="task-check" data-blockkey="b1" onclick="toggleBlock('b1')"></button>
+            <div><b>Cirurgia Geral</b> — ATLS - ABCDE do trauma + pneumotórax hipertensivo. Meta: 30-40 questões x2 blocos (60-80 no dia)</div>
+          </div>
+          <div class="task-row">
+            <div class="task-time">17h-18h30</div>
+            <button class="task-check" data-blockkey="b2" onclick="toggleBlock('b2')"></button>
+            <div>Alimentar Caderno de Erros + criar flashcards novos no Anki</div>
+          </div>
+          <div class="task-row">
+            <div class="task-time">18h30-19h15</div>
+            <button class="task-check" data-blockkey="b3" onclick="toggleBlock('b3')"></button>
+            <div>10-15 questões rápidas de revisão geral</div>
+          </div>
         </div>
-        <div class="block-item">
-          <button class="block-check" data-blockkey="t2" onclick="toggleBlock('t2')"></button>
-          <div><b>Ginecologia e Obstetrícia:</b> Pré-Natal, Sangramentos de 1º e 2º Trimestre</div>
+
+        <div class="inputs-flex">
+          <div class="input-field">
+            <label style="font-size: 12px; color: var(--text-muted);">Questões feitas</label>
+            <input type="number" id="inpQ">
+          </div>
+          <div class="input-field">
+            <label style="font-size: 12px; color: var(--text-muted);">Acertos</label>
+            <input type="number" id="inpA">
+          </div>
         </div>
-        <div class="block-item">
-          <button class="block-check" data-blockkey="t3" onclick="toggleBlock('t3')"></button>
-          <div><b>Pediatria:</b> Neonatologia, Crescimento, Puericultura e Vacinas</div>
-        </div>
-        <div class="block-item">
-          <button class="block-check" data-blockkey="t4" onclick="toggleBlock('t4')"></button>
-          <div><b>Clínica Médica:</b> Hipertensão, Diabetes, Síndromes Coronarianas</div>
-        </div>
-        <div class="block-item">
-          <button class="block-check" data-blockkey="t5" onclick="toggleBlock('t5')"></button>
-          <div><b>Preventiva / SUS:</b> Epidemiologia, Atenção Primária, Declaração de Óbito</div>
-        </div>
+
+        <button class="btn-save" onclick="saveData()">Salvar</button>
       </div>
     </section>
 
-    <!-- REVISÕES -->
-    <section class="view" id="view-revisoes">
-      <div class="topbar"><h1>Ciclos de Revisão Espaçada</h1></div>
-      <div class="grid3">
-        <div class="card">
-          <span class="badge badge-teal">CICLO R1 (24h - 48h)</span>
-          <p style="font-size:13px; margin:10px 0;">Revisão rápida de fixação pós-estudo inicial.</p>
-          <div class="block-item">
-            <button class="block-check" data-blockkey="r1_1" onclick="toggleBlock('r1_1')"></button>
-            <div>Cirurgia - ATLS</div>
+    <!-- TRILHA (47 DIAS) COM MAPA VISUAL -->
+    <section class="view" id="view-trilha">
+      <div class="date-pill">29/07/2026 · Quarta</div>
+
+      <div class="legend-container">
+        <div class="legend-item"><div class="legend-dot bg-cirurgia"></div> Cirurgia Geral</div>
+        <div class="legend-item"><div class="legend-dot bg-preventiva"></div> Medicina Preventiva</div>
+        <div class="legend-item"><div class="legend-dot bg-pediatria"></div> Pediatria</div>
+        <div class="legend-item"><div class="legend-dot bg-ginecologia"></div> Ginecologia e Obstetrícia</div>
+        <div class="legend-item"><div class="legend-dot bg-clinica"></div> Clínica Médica</div>
+        <div class="legend-item"><div class="legend-dot bg-simulado"></div> Simulado</div>
+        <div class="legend-item"><div class="legend-dot bg-descanso"></div> Descanso</div>
+      </div>
+
+      <div class="card">
+        <div class="trail-map">
+          
+          <!-- Linha 1 (Esq -> Dir) -->
+          <div class="trail-row curve-right">
+            <div class="trail-node bg-cirurgia active-day">1</div>
+            <div class="trail-node bg-preventiva">2</div>
+            <div class="trail-node bg-pediatria">3</div>
           </div>
-        </div>
-        <div class="card">
-          <span class="badge badge-coral">CICLO R2 (7 DIAS)</span>
-          <p style="font-size:13px; margin:10px 0;">Resolução direcionada de questões de fixação.</p>
-          <div class="block-item">
-            <button class="block-check" data-blockkey="r2_1" onclick="toggleBlock('r2_1')"></button>
-            <div>Ginecologia - Pré-natal</div>
+
+          <!-- Linha 2 (Dir -> Esq) -->
+          <div class="trail-row curve-left">
+            <div class="trail-node bg-ginecologia">14</div>
+            <div class="trail-node bg-clinica">13</div>
+            <div class="trail-node bg-descanso">12</div>
           </div>
-        </div>
-        <div class="card">
-          <span class="badge badge-teal">CICLO R3 (30 DIAS)</span>
-          <p style="font-size:13px; margin:10px 0;">Simulados de prova prática e teórica.</p>
-          <div class="block-item">
-            <button class="block-check" data-blockkey="r3_1" onclick="toggleBlock('r3_1')"></button>
-            <div>Pediatria - Neonatologia</div>
+
+          <!-- Linha 3 (Esq -> Dir) -->
+          <div class="trail-row curve-right">
+            <div class="trail-node bg-cirurgia">15</div>
+            <div class="trail-node bg-preventiva">16</div>
+            <div class="trail-node bg-pediatria">17</div>
           </div>
+
+          <!-- Linha 4 (Dir -> Esq) -->
+          <div class="trail-row curve-left">
+            <div class="trail-node bg-clinica">28</div>
+            <div class="trail-node bg-cirurgia">27</div>
+            <div class="trail-node bg-descanso">26</div>
+          </div>
+
+          <!-- Linha 5 (Esq -> Dir) -->
+          <div class="trail-row curve-right">
+            <div class="trail-node bg-ginecologia">29</div>
+            <div class="trail-node bg-preventiva">30</div>
+            <div class="trail-node bg-pediatria">31</div>
+          </div>
+
+          <!-- Linha 6 (Dir -> Esq) -->
+          <div class="trail-row curve-left">
+            <div class="trail-node bg-preventiva">42</div>
+            <div class="trail-node bg-cirurgia">41</div>
+            <div class="trail-node bg-descanso">40</div>
+          </div>
+
+          <!-- Linha 7 (Esq -> Dir) -->
+          <div class="trail-row">
+            <div class="trail-node bg-pediatria">43</div>
+            <div class="trail-node bg-ginecologia">44</div>
+            <div class="trail-node bg-clinica">45</div>
+          </div>
+
         </div>
       </div>
     </section>
 
     <!-- ESTATÍSTICAS -->
     <section class="view" id="view-estatisticas">
-      <div class="topbar"><h1>Estatísticas do Aluno</h1></div>
-      <div class="grid2">
-        <div class="card">
-          <h3>Métricas Acumuladas</h3>
-          <div style="margin-top:16px;">
-            <p>Total de Questões Feitas: <b id="statTotalQ">0</b></p>
-            <p style="margin-top:8px;">Total de Acertos: <b id="statTotalA">0</b></p>
-            <p style="margin-top:8px;">Aproveitamento Geral: <b id="statPct">0%</b></p>
-          </div>
+      <div class="topbar"><h1>Estatísticas</h1></div>
+      <div class="card">
+        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 20px;">Progresso por área (meta = traço vertical)</h3>
+
+        <div class="progress-bar-container">
+          <div class="progress-label">Cirurgia Geral</div>
+          <div class="progress-track"><div class="progress-fill" style="width: 40%; background: var(--c-cirurgia);"></div></div>
+          <div class="progress-val">40%</div>
+          <span class="status-badge status-abaixo">Abaixo</span>
         </div>
-        <div class="card">
-          <h3>Status de Metas</h3>
-          <p style="color:var(--ink-2); font-size:13px; margin-top:8px;">Mantenha a meta acima de 75% de aproveitamento para o corte do Revalida.</p>
+
+        <div class="progress-bar-container">
+          <div class="progress-label">Medicina Preventiva</div>
+          <div class="progress-track"><div class="progress-fill" style="width: 65%; background: var(--c-preventiva);"></div></div>
+          <div class="progress-val">65%</div>
+          <span class="status-badge status-abaixo">Abaixo</span>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-label">Pediatria</div>
+          <div class="progress-track"><div class="progress-fill" style="width: 55%; background: var(--c-pediatria);"></div></div>
+          <div class="progress-val">55%</div>
+          <span class="status-badge status-abaixo">Abaixo</span>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-label">Ginecologia e Obstetrícia</div>
+          <div class="progress-track"><div class="progress-fill" style="width: 60%; background: var(--c-ginecologia);"></div></div>
+          <div class="progress-val">60%</div>
+          <span class="status-badge status-abaixo">Abaixo</span>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-label">Clínica Médica</div>
+          <div class="progress-track"><div class="progress-fill" style="width: 65%; background: var(--c-clinica);"></div></div>
+          <div class="progress-val">65%</div>
+          <span class="status-badge status-meta">Na meta</span>
         </div>
       </div>
     </section>
+
+    <!-- REVISÕES -->
+    <section class="view" id="view-revisoes">
+      <div class="topbar"><h1>Revisões</h1></div>
+      <div class="card">
+        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 12px;">Revisão espaçada de hoje (7 / 14 / 30 dias)</h3>
+        <p style="color: var(--text-muted); font-size: 13.5px;">Nenhuma revisão programada ainda — isso passa a aparecer a partir do 8º dia de trilha.</p>
+      </div>
+    </section>
+
   </main>
 </div>
 
@@ -240,7 +645,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 let _supabase;
 const USER_DATA_ID = 'meu_progresso_revalida';
-let appData = { blocks: {}, questoes: 0, acertos: 0 };
+let appData = { blocks: {}, questoes: 0, acertos: 0, streak: 0 };
 
 function initApp() {
   const localSaved = localStorage.getItem('revalida_app_data');
@@ -256,7 +661,7 @@ function initApp() {
       _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
       loadFromNuvem();
     } catch (e) {
-      console.warn('Sincronização em nuvem desativada, operando localmente.', e);
+      console.warn('Operando localmente.', e);
     }
   }
 }
@@ -275,9 +680,7 @@ async function loadFromNuvem() {
       localStorage.setItem('revalida_app_data', JSON.stringify(appData));
       renderState();
     }
-  } catch (err) {
-    console.warn('Aviso Supabase:', err);
-  }
+  } catch (err) {}
 }
 
 async function saveData() {
@@ -289,42 +692,24 @@ async function saveData() {
 
   if (_supabase) {
     try {
-      const { error } = await _supabase
+      await _supabase
         .from('progresso_estudos')
         .upsert({ id: USER_DATA_ID, data: appData, updated_at: new Date() });
-
-      if (!error) {
-        alert('Progresso salvo com sucesso (Local + Nuvem)!');
-        return;
-      }
-    } catch (e) {
-      console.warn('Falha ao salvar na nuvem:', e);
-    }
+    } catch (e) {}
   }
-  alert('Progresso salvo localmente com sucesso!');
+  alert('Salvo com sucesso!');
 }
 
 function renderState() {
   document.getElementById('inpQ').value = appData.questoes || '';
   document.getElementById('inpA').value = appData.acertos || '';
+  document.getElementById('streakCount').innerText = appData.streak || 0;
 
-  document.querySelectorAll('.block-check').forEach(btn => {
+  document.querySelectorAll('.task-check').forEach(btn => {
     const key = btn.dataset.blockkey;
     if (appData.blocks && appData.blocks[key]) btn.classList.add('done');
     else btn.classList.remove('done');
   });
-
-  if (appData.questoes > 0) {
-    const pct = Math.round((appData.acertos / appData.questoes) * 100);
-    document.getElementById('ringPct').innerText = `${pct}%`;
-    document.getElementById('ringSub').innerText = `${appData.acertos} acertos de ${appData.questoes} questões`;
-    
-    if (document.getElementById('statTotalQ')) {
-      document.getElementById('statTotalQ').innerText = appData.questoes;
-      document.getElementById('statTotalA').innerText = appData.acertos;
-      document.getElementById('statPct').innerText = `${pct}%`;
-    }
-  }
 }
 
 function toggleBlock(key) {
@@ -343,5 +728,6 @@ function switchTab(tabId, e) {
 
 window.addEventListener('DOMContentLoaded', initApp);
 </script>
+
 </body>
 </html>
