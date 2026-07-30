@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trilha Revalida — Painel de Estudos</title>
 
-<!-- SDK do Supabase -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -107,7 +106,6 @@ button{ font-family:inherit; cursor:pointer; }
   </aside>
 
   <main class="main">
-    <!-- HOJE -->
     <section class="view active" id="view-hoje">
       <div class="topbar"><h1>Hoje</h1></div>
       <div class="grid2">
@@ -137,7 +135,7 @@ button{ font-family:inherit; cursor:pointer; }
               <input type="number" id="inpA">
             </div>
           </div>
-          <button class="btn" onclick="saveData()">Salvar na Nuvem</button>
+          <button class="btn" onclick="saveData()">Salvar Progresso</button>
         </div>
 
         <div class="card" style="text-align:center;">
@@ -148,7 +146,6 @@ button{ font-family:inherit; cursor:pointer; }
       </div>
     </section>
 
-    <!-- TRILHA -->
     <section class="view" id="view-trilha">
       <div class="topbar"><h1>Trilha de Estudos</h1></div>
       <div class="card">
@@ -178,7 +175,6 @@ button{ font-family:inherit; cursor:pointer; }
       </div>
     </section>
 
-    <!-- REVISÕES -->
     <section class="view" id="view-revisoes">
       <div class="topbar"><h1>Ciclos de Revisão Espaçada</h1></div>
       <div class="grid3">
@@ -209,7 +205,6 @@ button{ font-family:inherit; cursor:pointer; }
       </div>
     </section>
 
-    <!-- ESTATÍSTICAS -->
     <section class="view" id="view-estatisticas">
       <div class="topbar"><h1>Estatísticas do Aluno</h1></div>
       <div class="grid2">
@@ -231,73 +226,79 @@ button{ font-family:inherit; cursor:pointer; }
 </div>
 
 <script>
-// URL do Supabase corrigida para o seu projeto exato
 const SUPABASE_URL = 'https://hizcqlftbejocvrgugl.supabase.co';
+// Substitua o texto abaixo se a sua chave 'anon' for diferente no painel do Supabase
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpemNxbGZ0YmVqb2N2cmd1Z2wiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTczODE0NjIxOCwiZXhwIjoyMDUzNzIyMjE4fQ.J-JN0ub1FAmjW72zhTSwie9UgHHIoagcRfARPURJBys';
 
 let _supabase;
 const USER_DATA_ID = 'meu_progresso_revalida';
 let appData = { blocks: {}, questoes: 0, acertos: 0 };
 
-function initSupabase() {
+
+function initApp() {
+  // 1. Carrega primeiro do LocalStorage (funciona 100% offline/local sem dar erro)
+  const localSaved = localStorage.getItem('revalida_app_data');
+  if (localSaved) {
+    try {
+      appData = JSON.parse(localSaved);
+      renderState();
+    } catch(e){}
+  }
+
+  // 2. Conecta ao Supabase para sincronização em nuvem silenciosa
   if (window.supabase) {
-    _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    loadData();
-  } else {
-    setTimeout(initSupabase, 100);
+    try {
+      _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      loadFromNuvem();
+    } catch (e) {
+      console.warn('Sincronização em nuvem desativada, operando localmente.', e);
+    }
   }
 }
 
-async function loadData() {
+async function loadFromNuvem() {
   if (!_supabase) return;
   try {
-    const { data } = await _supabase
+    const { data, error } = await _supabase
       .from('progresso_estudos')
       .select('data')
       .eq('id', USER_DATA_ID)
       .maybeSingle();
 
-    if (data && data.data) {
+    if (!error && data && data.data) {
       appData = data.data;
+      localStorage.setItem('revalida_app_data', JSON.stringify(appData));
       renderState();
     }
   } catch (err) {
-    console.error(err);
+    console.warn('Aviso Supabase:', err);
   }
 }
 
 async function saveData() {
-  if (!_supabase) return;
   appData.questoes = parseInt(document.getElementById('inpQ').value) || 0;
   appData.acertos = parseInt(document.getElementById('inpA').value) || 0;
 
+  // Salva imediatamente localmente
+  localStorage.setItem('revalida_app_data', JSON.stringify(appData));
   renderState();
 
-  const { data: updateData, error: updateError } = await _supabase
-    .from('progresso_estudos')
-    .update({ data: appData, updated_at: new Date() })
-    .eq('id', USER_DATA_ID)
-    .select();
+  // Tenta sincronizar na nuvem
+  if (_supabase) {
+    try {
+      const { error } = await _supabase
+        .from('progresso_estudos')
+        .upsert({ id: USER_DATA_ID, data: appData, updated_at: new Date() });
 
-  if (!updateError && (!updateData || updateData.length === 0)) {
-    const { error: insertError } = await _supabase
-      .from('progresso_estudos')
-      .insert({ id: USER_DATA_ID, data: appData, updated_at: new Date() });
-
-    if (!insertError) {
-      alert('Progresso criado e salvo com sucesso!');
-      return;
-    } else {
-      alert('Erro no Supabase: ' + insertError.message);
-      return;
+      if (!error) {
+        alert('Progresso salvo com sucesso (Local + Nuvem)!');
+        return;
+      }
+    } catch (e) {
+      console.warn('Falha ao salvar na nuvem:', e);
     }
   }
-
-  if (!updateError) {
-    alert('Dados salvos na nuvem com sucesso!');
-  } else {
-    alert('Erro no Supabase: ' + updateError.message);
-  }
+  alert('Progresso salvo localmente com sucesso!');
 }
 
 function renderState() {
@@ -337,7 +338,7 @@ function switchTab(tabId, e) {
   if (e) e.currentTarget.classList.add('active');
 }
 
-window.addEventListener('DOMContentLoaded', initSupabase);
+window.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
 </html>
