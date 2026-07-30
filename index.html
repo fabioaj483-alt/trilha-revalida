@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trilha Revalida</title>
 
-<!-- Supabase & Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Chart.js carregado de forma segura -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
 <style>
 :root {
@@ -81,11 +81,12 @@ button { font-family: inherit; cursor: pointer; border: none; }
   padding: 10px 14px; border-radius: 8px;
   color: var(--sidebar-text); background: transparent;
   font-size: 14px; font-weight: 500; text-align: left; width: 100%;
+  cursor: pointer;
 }
 
 .nav-item:hover { background: var(--sidebar-hover); color: #FFFFFF; }
 .nav-item.active { background: var(--sidebar-active); color: #FFFFFF; }
-.nav-item svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; }
+.nav-item svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; fill: none; pointer-events: none; }
 
 .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 12px; }
 
@@ -116,7 +117,6 @@ button { font-family: inherit; cursor: pointer; border: none; }
   position: relative;
 }
 
-/* ESTATÍSTICAS E BADGES NO CANTO SUPERIOR DIREITO DO CARD */
 .card-header-right {
   position: absolute;
   top: 24px;
@@ -158,20 +158,19 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .task-time { width: 70px; color: var(--text-muted); font-size: 12px; padding-top: 2px; flex-shrink: 0; }
 
 .task-check {
-  width: 18px; height: 18px; border-radius: 4px;
+  width: 22px; height: 22px; border-radius: 6px;
   border: 2px solid #CBD5E1; background: #FFF;
   cursor: pointer; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease;
 }
 
-.task-check.done { background: #0EA5E9; border-color: #0EA5E9; position: relative; }
-.task-check.done::after {
-  content: '✓'; color: #FFF; font-size: 12px;
-  display: block; text-align: center; line-height: 14px;
-}
+.task-check.done { background: #0EA5E9; border-color: #0EA5E9; color: #FFF; font-weight: bold; }
+.task-check.done::after { content: '✓'; font-size: 14px; }
 
 .inputs-flex { display: flex; gap: 16px; margin-top: 24px; }
 .input-field { display: flex; flex-direction: column; gap: 6px; }
-.input-field input { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; width: 110px; }
+.input-field input { padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; width: 110px; font-size: 14px; }
 
 .btn-save {
   background: #1E293B; color: #FFF;
@@ -212,18 +211,6 @@ button { font-family: inherit; cursor: pointer; border: none; }
   height: 2px; background: #E2E8F0; z-index: 1;
 }
 
-.curve-right::after {
-  content: ''; position: absolute;
-  right: 19px; top: 20px; bottom: -42px;
-  width: 2px; background: #E2E8F0; z-index: 1;
-}
-
-.curve-left::after {
-  content: ''; position: absolute;
-  left: 19px; top: 20px; bottom: -42px;
-  width: 2px; background: #E2E8F0; z-index: 1;
-}
-
 .trail-node {
   width: 40px; height: 40px; border-radius: 50%;
   color: #FFF; font-weight: 700; font-size: 12px;
@@ -244,19 +231,9 @@ button { font-family: inherit; cursor: pointer; border: none; }
 .bg-simulado { background-color: var(--c-simulado); }
 .bg-descanso { background-color: var(--c-descanso); }
 
-/* BARRAS DE ESTATÍSTICAS E GRÁFICO */
-.progress-bar-container { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-.progress-label { width: 160px; font-size: 13px; font-weight: 600; }
-.progress-track { flex: 1; height: 12px; background: #E2E8F0; border-radius: 6px; overflow: hidden; }
-.progress-fill { height: 100%; border-radius: 6px; }
-.progress-val { font-size: 12px; font-weight: 600; width: 40px; text-align: right; }
-.status-badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
-.status-abaixo { background: #FEE2E2; color: #DC2626; }
-.status-meta { background: #E0F2FE; color: #0284C7; }
-
 .chart-wrapper { position: relative; width: 100%; height: 260px; margin-top: 10px; }
 
-/* MODAL DE DETALHES DO DIA DA TRILHA */
+/* MODAL DE DETALHES */
 .modal-overlay {
   display: none; position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
@@ -292,22 +269,22 @@ button { font-family: inherit; cursor: pointer; border: none; }
     </div>
 
     <nav class="nav">
-      <button class="nav-item active" onclick="switchTab('hoje', event)">
+      <button class="nav-item active" data-target="hoje">
         <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
         <span>Hoje</span>
       </button>
 
-      <button class="nav-item" onclick="switchTab('trilha', event)">
+      <button class="nav-item" data-target="trilha">
         <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
         <span>Trilha (47 dias)</span>
       </button>
 
-      <button class="nav-item" onclick="switchTab('estatisticas', event)">
+      <button class="nav-item" data-target="estatisticas">
         <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
         <span>Estatísticas</span>
       </button>
 
-      <button class="nav-item" onclick="switchTab('revisoes', event)">
+      <button class="nav-item" data-target="revisoes">
         <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
         <span>Revisões</span>
       </button>
@@ -317,7 +294,7 @@ button { font-family: inherit; cursor: pointer; border: none; }
       <div class="streak-card">
         <span style="font-size: 18px;">🔥</span>
         <div>
-          <div class="streak-number" id="streakCount">0</div>
+          <div class="streak-number" id="streakCount">1</div>
           <div class="streak-text">dias seguidos<br>registrando estudo</div>
         </div>
       </div>
@@ -334,7 +311,6 @@ button { font-family: inherit; cursor: pointer; border: none; }
     <section class="view active" id="view-hoje">
       <div class="topbar"><h1>Hoje</h1></div>
       <div class="card">
-        <!-- CANTO SUPERIOR DIREITO DO CARD (PORCENTAGEM E CONCLUÍDAS) -->
         <div class="card-header-right">
           <span class="stat-badge" id="tasksBadge">0/4 concluídas</span>
           <span class="stat-badge stat-badge-accent" id="pctBadge">0% acertos</span>
@@ -347,22 +323,22 @@ button { font-family: inherit; cursor: pointer; border: none; }
         <div class="task-list">
           <div class="task-row">
             <div class="task-time">10h00</div>
-            <button class="task-check" data-blockkey="b0" onclick="toggleBlock('b0')"></button>
+            <button class="task-check" data-blockkey="b0"></button>
             <div>Anki (30-40min) + 15-20 questões Caderno de Erros (dia anterior)</div>
           </div>
           <div class="task-row">
             <div class="task-time">11h-17h</div>
-            <button class="task-check" data-blockkey="b1" onclick="toggleBlock('b1')"></button>
+            <button class="task-check" data-blockkey="b1"></button>
             <div><b>Cirurgia Geral</b> — ATLS - ABCDE do trauma + pneumotórax hipertensivo. Meta: 30-40 questões x2 blocos (60-80 no dia)</div>
           </div>
           <div class="task-row">
             <div class="task-time">17h-18h30</div>
-            <button class="task-check" data-blockkey="b2" onclick="toggleBlock('b2')"></button>
+            <button class="task-check" data-blockkey="b2"></button>
             <div>Alimentar Caderno de Erros + criar flashcards novos no Anki</div>
           </div>
           <div class="task-row">
             <div class="task-time">18h30-19h15</div>
-            <button class="task-check" data-blockkey="b3" onclick="toggleBlock('b3')"></button>
+            <button class="task-check" data-blockkey="b3"></button>
             <div>10-15 questões rápidas de revisão geral</div>
           </div>
         </div>
@@ -370,21 +346,21 @@ button { font-family: inherit; cursor: pointer; border: none; }
         <div class="inputs-flex">
           <div class="input-field">
             <label style="font-size: 12px; color: var(--text-muted);">Questões feitas</label>
-            <input type="number" id="inpQ" oninput="calculatePct()">
+            <input type="number" id="inpQ" min="0">
           </div>
           <div class="input-field">
             <label style="font-size: 12px; color: var(--text-muted);">Acertos</label>
-            <input type="number" id="inpA" oninput="calculatePct()">
+            <input type="number" id="inpA" min="0">
           </div>
         </div>
 
-        <button class="btn-save" onclick="saveData()">Salvar</button>
+        <button class="btn-save" id="btnSaveData">Salvar Progresso</button>
       </div>
     </section>
 
-    <!-- TRILHA MAPA DE BOLINHAS -->
+    <!-- TRILHA MAPA -->
     <section class="view" id="view-trilha">
-      <div class="date-pill">29/07/2026 · Quarta</div>
+      <div class="date-pill">30/07/2026 · Quinta</div>
 
       <div class="legend-container">
         <div class="legend-item"><div class="legend-dot bg-cirurgia"></div> Cirurgia Geral</div>
@@ -398,47 +374,20 @@ button { font-family: inherit; cursor: pointer; border: none; }
 
       <div class="card">
         <div class="trail-map">
-          <!-- Linha 1 -->
-          <div class="trail-row curve-right">
-            <div class="trail-node bg-cirurgia active-day" onclick="openDayModal(1)">1</div>
-            <div class="trail-node bg-preventiva" onclick="openDayModal(2)">2</div>
-            <div class="trail-node bg-pediatria" onclick="openDayModal(3)">3</div>
-          </div>
-          <!-- Linha 2 -->
-          <div class="trail-row curve-left">
-            <div class="trail-node bg-ginecologia" onclick="openDayModal(14)">14</div>
-            <div class="trail-node bg-clinica" onclick="openDayModal(13)">13</div>
-            <div class="trail-node bg-descanso" onclick="openDayModal(12)">12</div>
-          </div>
-          <!-- Linha 3 -->
-          <div class="trail-row curve-right">
-            <div class="trail-node bg-cirurgia" onclick="openDayModal(15)">15</div>
-            <div class="trail-node bg-preventiva" onclick="openDayModal(16)">16</div>
-            <div class="trail-node bg-pediatria" onclick="openDayModal(17)">17</div>
-          </div>
-          <!-- Linha 4 -->
-          <div class="trail-row curve-left">
-            <div class="trail-node bg-clinica" onclick="openDayModal(28)">28</div>
-            <div class="trail-node bg-cirurgia" onclick="openDayModal(27)">27</div>
-            <div class="trail-node bg-descanso" onclick="openDayModal(26)">26</div>
-          </div>
-          <!-- Linha 5 -->
-          <div class="trail-row curve-right">
-            <div class="trail-node bg-ginecologia" onclick="openDayModal(29)">29</div>
-            <div class="trail-node bg-preventiva" onclick="openDayModal(30)">30</div>
-            <div class="trail-node bg-pediatria" onclick="openDayModal(31)">31</div>
-          </div>
-          <!-- Linha 6 -->
-          <div class="trail-row curve-left">
-            <div class="trail-node bg-preventiva" onclick="openDayModal(42)">42</div>
-            <div class="trail-node bg-cirurgia" onclick="openDayModal(41)">41</div>
-            <div class="trail-node bg-descanso" onclick="openDayModal(40)">40</div>
-          </div>
-          <!-- Linha 7 -->
           <div class="trail-row">
-            <div class="trail-node bg-pediatria" onclick="openDayModal(43)">43</div>
-            <div class="trail-node bg-ginecologia" onclick="openDayModal(44)">44</div>
-            <div class="trail-node bg-clinica" onclick="openDayModal(45)">45</div>
+            <div class="trail-node bg-cirurgia active-day" data-day="1">1</div>
+            <div class="trail-node bg-preventiva" data-day="2">2</div>
+            <div class="trail-node bg-pediatria" data-day="3">3</div>
+          </div>
+          <div class="trail-row">
+            <div class="trail-node bg-ginecologia" data-day="14">14</div>
+            <div class="trail-node bg-clinica" data-day="13">13</div>
+            <div class="trail-node bg-descanso" data-day="12">12</div>
+          </div>
+          <div class="trail-row">
+            <div class="trail-node bg-cirurgia" data-day="15">15</div>
+            <div class="trail-node bg-preventiva" data-day="16">16</div>
+            <div class="trail-node bg-pediatria" data-day="17">17</div>
           </div>
         </div>
       </div>
@@ -447,47 +396,6 @@ button { font-family: inherit; cursor: pointer; border: none; }
     <!-- ESTATÍSTICAS -->
     <section class="view" id="view-estatisticas">
       <div class="topbar"><h1>Estatísticas</h1></div>
-      
-      <div class="card">
-        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 20px;">Progresso por área (meta = traço vertical)</h3>
-
-        <div class="progress-bar-container">
-          <div class="progress-label">Cirurgia Geral</div>
-          <div class="progress-track"><div class="progress-fill" style="width: 40%; background: var(--c-cirurgia);"></div></div>
-          <div class="progress-val">40%</div>
-          <span class="status-badge status-abaixo">Abaixo</span>
-        </div>
-
-        <div class="progress-bar-container">
-          <div class="progress-label">Medicina Preventiva</div>
-          <div class="progress-track"><div class="progress-fill" style="width: 65%; background: var(--c-preventiva);"></div></div>
-          <div class="progress-val">65%</div>
-          <span class="status-badge status-abaixo">Abaixo</span>
-        </div>
-
-        <div class="progress-bar-container">
-          <div class="progress-label">Pediatria</div>
-          <div class="progress-track"><div class="progress-fill" style="width: 55%; background: var(--c-pediatria);"></div></div>
-          <div class="progress-val">55%</div>
-          <span class="status-badge status-abaixo">Abaixo</span>
-        </div>
-
-        <div class="progress-bar-container">
-          <div class="progress-label">Ginecologia e Obstetrícia</div>
-          <div class="progress-track"><div class="progress-fill" style="width: 60%; background: var(--c-ginecologia);"></div></div>
-          <div class="progress-val">60%</div>
-          <span class="status-badge status-abaixo">Abaixo</span>
-        </div>
-
-        <div class="progress-bar-container">
-          <div class="progress-label">Clínica Médica</div>
-          <div class="progress-track"><div class="progress-fill" style="width: 65%; background: var(--c-clinica);"></div></div>
-          <div class="progress-val">65%</div>
-          <span class="status-badge status-meta">Na meta</span>
-        </div>
-      </div>
-
-      <!-- GRÁFICO CORRIGIDO -->
       <div class="card">
         <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 12px;">Evolução de Desempenho em Questões (%)</h3>
         <div class="chart-wrapper">
@@ -500,8 +408,8 @@ button { font-family: inherit; cursor: pointer; border: none; }
     <section class="view" id="view-revisoes">
       <div class="topbar"><h1>Revisões</h1></div>
       <div class="card">
-        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 12px;">Revisão espaçada de hoje (7 / 14 / 30 dias)</h3>
-        <p style="color: var(--text-muted); font-size: 13.5px;">Nenhuma revisão programada ainda — isso passa a aparecer a partir do 8º dia de trilha.</p>
+        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 12px;">Revisão espaçada (7 / 14 / 30 dias)</h3>
+        <p style="color: var(--text-muted); font-size: 13.5px;">Nenhuma revisão agendada para hoje.</p>
       </div>
     </section>
 
@@ -511,18 +419,172 @@ button { font-family: inherit; cursor: pointer; border: none; }
 <!-- MODAL FLUTUANTE DE DETALHES -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal-card">
-    <button class="modal-close" onclick="closeDayModal()">&times;</button>
+    <button class="modal-close" id="btnCloseModal">&times;</button>
     <span class="badge-phase" id="mPhase">FASE 1</span>
     <h2 id="mArea" style="font-size: 18px; font-weight: 700; margin-bottom: 6px;">—</h2>
     <p id="mTopic" style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 16px;">—</p>
-
-    <div style="background: #F8FAFC; padding: 14px; border-radius: 8px; font-size: 13px;">
-      <strong>Meta do Dia:</strong>
-      <p style="margin-top: 4px; color: var(--text-muted);">Realizar 60-80 questões da área + Anki diário e revisão dos erros cometidos.</p>
-    </div>
   </div>
 </div>
 
 <script>
-const SUPABASE_URL = 'https://hizcqlftbejocvrgugl.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhpemNxbGZ0YmVqb2N2cmd1Z2wiLCJyb2xlIjoiYW5vbiIsImlh
+// Dados do App salvos no LocalStorage
+let appData = {
+  blocks: {},
+  questoes: 0,
+  acertos: 0,
+  streak: 1
+};
+
+// Carregar dados salvos ao iniciar
+function loadLocalData() {
+  const saved = localStorage.getItem('revalida_app_data');
+  if (saved) {
+    try {
+      appData = JSON.parse(saved);
+    } catch(e) {}
+  }
+}
+
+function saveData() {
+  localStorage.setItem('revalida_app_data', JSON.stringify(appData));
+}
+
+// Atualizar interface
+function updateUI() {
+  const inpQ = document.getElementById('inpQ');
+  const inpA = document.getElementById('inpA');
+  
+  if (inpQ) inpQ.value = appData.questoes || '';
+  if (inpA) inpA.value = appData.acertos || '';
+
+  let doneCount = 0;
+  document.querySelectorAll('.task-check').forEach(btn => {
+    const key = btn.dataset.blockkey;
+    if (appData.blocks && appData.blocks[key]) {
+      btn.classList.add('done');
+      doneCount++;
+    } else {
+      btn.classList.remove('done');
+    }
+  });
+
+  const tasksBadge = document.getElementById('tasksBadge');
+  if (tasksBadge) tasksBadge.innerText = `${doneCount}/4 concluídas`;
+
+  calculatePct();
+}
+
+function calculatePct() {
+  const q = parseInt(document.getElementById('inpQ').value) || 0;
+  const a = parseInt(document.getElementById('inpA').value) || 0;
+  let pct = 0;
+  if (q > 0) {
+    pct = Math.round((a / q) * 100);
+  }
+  const pctBadge = document.getElementById('pctBadge');
+  if (pctBadge) pctBadge.innerText = `${pct}% acertos`;
+}
+
+// Eventos acionados após o carregamento do DOM
+document.addEventListener('DOMContentLoaded', () => {
+  loadLocalData();
+  updateUI();
+
+  // 1. Troca de Abas
+  document.querySelectorAll('.nav-item').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const target = btn.dataset.target;
+
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+      btn.classList.add('active');
+      const targetView = document.getElementById(`view-${target}`);
+      if (targetView) targetView.classList.add('active');
+
+      if (target === 'estatisticas') {
+        renderChart();
+      }
+    });
+  });
+
+  // 2. Cliques nos quadradinhos de tarefas (Checkboxes)
+  document.querySelectorAll('.task-check').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.blockkey;
+      if (!appData.blocks) appData.blocks = {};
+      appData.blocks[key] = !appData.blocks[key];
+      saveData();
+      updateUI();
+    });
+  });
+
+  // 3. Inputs de número de questões/acertos
+  document.getElementById('inpQ').addEventListener('input', () => {
+    appData.questoes = parseInt(document.getElementById('inpQ').value) || 0;
+    calculatePct();
+  });
+
+  document.getElementById('inpA').addEventListener('input', () => {
+    appData.acertos = parseInt(document.getElementById('inpA').value) || 0;
+    calculatePct();
+  });
+
+  // 4. Botão Salvar
+  document.getElementById('btnSaveData').addEventListener('click', () => {
+    saveData();
+    alert('Progresso salvo com sucesso!');
+  });
+
+  // 5. Cliques nas bolinhas da Trilha
+  document.querySelectorAll('.trail-node').forEach(node => {
+    node.addEventListener('click', () => {
+      const day = node.dataset.day;
+      document.getElementById('mPhase').innerText = `Dia ${day} · Fase 1`;
+      document.getElementById('mArea').innerText = node.innerText;
+      document.getElementById('mTopic').innerText = 'Revisão de Conteúdo e Exercícios Práticos';
+      document.getElementById('dayModal').classList.add('active');
+    });
+  });
+
+  // 6. Fechar Modal
+  document.getElementById('btnCloseModal').addEventListener('click', () => {
+    document.getElementById('dayModal').classList.remove('active');
+  });
+});
+
+// Renderizar Gráfico apenas quando necessário
+let chartInstance = null;
+function renderChart() {
+  if (typeof Chart === 'undefined') return;
+  const ctx = document.getElementById('performanceChart');
+  if (!ctx) return;
+
+  if (chartInstance) chartInstance.destroy();
+
+  chartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5'],
+      datasets: [{
+        label: '% de Acertos',
+        data: [50, 60, 65, 70, 75],
+        borderColor: '#3B82F6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        fill: true,
+        tension: 0.3
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: { min: 0, max: 100 }
+      }
+    }
+  });
+}
+</script>
+
+</body>
+</html>
