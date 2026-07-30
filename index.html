@@ -74,6 +74,7 @@
       cursor: pointer;
       user-select: none;
     }
+    .nav-item * { pointer-events: none; }
 
     .nav-item:hover { background: var(--sidebar-hover); color: #FFFFFF; }
     .nav-item.active { background: var(--sidebar-active); color: #FFFFFF; }
@@ -177,9 +178,10 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.06);
       user-select: none;
     }
+    .trail-node * { pointer-events: none; }
 
     .trail-node:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.12); }
-    .trail-node span { font-size: 10px; opacity: 0.85; font-weight: 500; margin-top: 2px; pointer-events: none; }
+    .trail-node span { font-size: 10px; opacity: 0.85; font-weight: 500; margin-top: 2px; }
     .trail-node.active-day { outline: 3px solid #0EA5E9; outline-offset: 2px; }
 
     .bg-cirurgia { background-color: var(--c-cirurgia); }
@@ -224,10 +226,10 @@
     </div>
 
     <nav class="nav">
-      <button class="nav-item active" data-tab="hoje">📍 Hoje</button>
-      <button class="nav-item" data-tab="trilha">🗺️ Trilha (47 dias)</button>
-      <button class="nav-item" data-tab="estatisticas">📊 Estatísticas</button>
-      <button class="nav-item" data-tab="revisoes">🔄 Revisões Espaçadas</button>
+      <button class="nav-item active" onclick="switchTab('hoje', this)"><span>📍 Hoje</span></button>
+      <button class="nav-item" onclick="switchTab('trilha', this)"><span>🗺️ Trilha (47 dias)</span></button>
+      <button class="nav-item" onclick="switchTab('estatisticas', this)"><span>📊 Estatísticas</span></button>
+      <button class="nav-item" onclick="switchTab('revisoes', this)"><span>🔄 Revisões Espaçadas</span></button>
     </nav>
 
     <div class="sidebar-footer">
@@ -267,22 +269,22 @@
         <div class="task-list">
           <div class="task-row">
             <div class="task-time">09:00 - 09:40</div>
-            <div class="task-check" data-task="b0"></div>
+            <div class="task-check" id="chk0" onclick="toggleTask('b0', 'chk0')"></div>
             <div>Revisão do Anki + 15 questões do Caderno de Erros do dia anterior</div>
           </div>
           <div class="task-row">
             <div class="task-time">10:00 - 16:00</div>
-            <div class="task-check" data-task="b1"></div>
+            <div class="task-check" id="chk1" onclick="toggleTask('b1', 'chk1')"></div>
             <div><b>Cirurgia Geral:</b> Estudo teórico focado + 2 blocos de 30 questões (Meta: 60 questões)</div>
           </div>
           <div class="task-row">
             <div class="task-time">16:30 - 18:00</div>
-            <div class="task-check" data-task="b2"></div>
+            <div class="task-check" id="chk2" onclick="toggleTask('b2', 'chk2')"></div>
             <div>Análise de Erros + Cadastro de novos Flashcards no Anki com imagens</div>
           </div>
           <div class="task-row">
             <div class="task-time">18:00 - 18:45</div>
-            <div class="task-check" data-task="b3"></div>
+            <div class="task-check" id="chk3" onclick="toggleTask('b3', 'chk3')"></div>
             <div>Bateria rápida de fixação (15 questões aleatórias)</div>
           </div>
         </div>
@@ -290,15 +292,15 @@
         <div class="inputs-flex">
           <div class="input-field">
             <label>Questões Feitas</label>
-            <input type="number" id="inpQ" min="0" placeholder="0">
+            <input type="number" id="inpQ" min="0" placeholder="0" oninput="handleCalc()">
           </div>
           <div class="input-field">
             <label>Acertos</label>
-            <input type="number" id="inpA" min="0" placeholder="0">
+            <input type="number" id="inpA" min="0" placeholder="0" oninput="handleCalc()">
           </div>
         </div>
 
-        <button class="btn-save" id="btnSave">💾 Salvar Progresso</button>
+        <button class="btn-save" onclick="saveData()">💾 Salvar Progresso</button>
       </div>
     </section>
 
@@ -418,11 +420,11 @@
 <!-- MODAL FLUTUANTE -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal-card">
-    <button class="modal-close" id="btnCloseModal">&times;</button>
+    <button class="modal-close" onclick="closeModal()">&times;</button>
     <span class="badge-phase" id="mPhase">DIA 1</span>
     <h3 id="mArea" style="font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #0F172A;">—</h3>
     <p id="mTopic" style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 20px;">—</p>
-    <button class="btn-save" style="width: 100%; margin: 0;" id="btnCloseModalBtn">Fechar</button>
+    <button class="btn-save" style="width: 100%; margin: 0;" onclick="closeModal()">Fechar</button>
   </div>
 </div>
 
@@ -445,8 +447,4 @@
     { day: 15, area: 'Cirurgia', cls: 'bg-cirurgia', topic: 'Hérnias da Parede Abdominal' },
     { day: 16, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Estudos Epidemiológicos: Coorte e Caso-Controle' },
     { day: 17, area: 'Pediatria', cls: 'bg-pediatria', topic: 'Aleitamento Materno e Alimentação Complementar' },
-    { day: 18, area: 'GO', cls: 'bg-ginecologia', topic: 'Trabalho de Parto e Partograma' },
-    { day: 19, area: 'Clínica', cls: 'bg-clinica', topic: 'Insuficiência Cardíaca e Síndromes Coronarianas' },
-    { day: 20, area: 'Descanso', cls: 'bg-descanso', topic: 'Descanso Ativo' },
-    { day: 21, area: 'Simulado', cls: 'bg-simulado', topic: 'Simulado de Prova Prática / Discursiva' },
-    { day: 22, area: 'Cirurgia', cls: 'bg-cirurgia', to
+    { day: 18, area: 'GO', cls: 'bg-ginecologia', topic: 'Trabalho de Parto
