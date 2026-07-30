@@ -74,7 +74,10 @@
       font-size: 14px; font-weight: 600; text-align: left; width: 100%;
       transition: all 0.15s ease;
       cursor: pointer;
+      user-select: none;
     }
+
+    .nav-item * { pointer-events: none; } /* Garante que o clique no texto dentro do botão não quebre o evento */
 
     .nav-item:hover { background: var(--sidebar-hover); color: #FFFFFF; }
     .nav-item.active { background: var(--sidebar-active); color: #FFFFFF; }
@@ -139,7 +142,7 @@
     .task-row { display: flex; align-items: flex-start; gap: 14px; font-size: 14px; line-height: 1.5; }
     .task-time { width: 90px; color: var(--text-muted); font-size: 12px; font-weight: 600; padding-top: 2px; flex-shrink: 0; }
 
-    /* CHECKBOX INTERATIVO CORRIGIDO */
+    /* CHECKBOX TOTALMENTE CLICÁVEL */
     .task-check {
       width: 24px; height: 24px; border-radius: 6px;
       border: 2px solid #CBD5E1; background: #FFF;
@@ -237,16 +240,16 @@
     </div>
 
     <nav class="nav">
-      <button class="nav-item active" data-tab="hoje">
+      <button class="nav-item active" onclick="window.switchTab('hoje', this)">
         <span>📍 Hoje</span>
       </button>
-      <button class="nav-item" data-tab="trilha">
+      <button class="nav-item" onclick="window.switchTab('trilha', this)">
         <span>🗺️ Trilha (47 dias)</span>
       </button>
-      <button class="nav-item" data-tab="estatisticas">
+      <button class="nav-item" onclick="window.switchTab('estatisticas', this)">
         <span>📊 Estatísticas</span>
       </button>
-      <button class="nav-item" data-tab="revisoes">
+      <button class="nav-item" onclick="window.switchTab('revisoes', this)">
         <span>🔄 Revisões Espaçadas</span>
       </button>
     </nav>
@@ -288,22 +291,22 @@
         <div class="task-list">
           <div class="task-row">
             <div class="task-time">09:00 - 09:40</div>
-            <div class="task-check" data-key="b0"></div>
+            <div class="task-check" onclick="window.toggleTask('b0', this)"></div>
             <div>Revisão do Anki + 15 questões do Caderno de Erros do dia anterior</div>
           </div>
           <div class="task-row">
             <div class="task-time">10:00 - 16:00</div>
-            <div class="task-check" data-key="b1"></div>
+            <div class="task-check" onclick="window.toggleTask('b1', this)"></div>
             <div><b>Cirurgia Geral:</b> Estudo teórico focado + 2 blocos de 30 questões (Meta: 60 questões)</div>
           </div>
           <div class="task-row">
             <div class="task-time">16:30 - 18:00</div>
-            <div class="task-check" data-key="b2"></div>
+            <div class="task-check" onclick="window.toggleTask('b2', this)"></div>
             <div>Análise de Erros + Cadastro de novos Flashcards no Anki com imagens</div>
           </div>
           <div class="task-row">
             <div class="task-time">18:00 - 18:45</div>
-            <div class="task-check" data-key="b3"></div>
+            <div class="task-check" onclick="window.toggleTask('b3', this)"></div>
             <div>Bateria rápida de fixação (15 questões aleatórias)</div>
           </div>
         </div>
@@ -311,15 +314,15 @@
         <div class="inputs-flex">
           <div class="input-field">
             <label>Questões Feitas</label>
-            <input type="number" id="inpQ" min="0" placeholder="0">
+            <input type="number" id="inpQ" min="0" placeholder="0" oninput="window.calculatePct()">
           </div>
           <div class="input-field">
             <label>Acertos</label>
-            <input type="number" id="inpA" min="0" placeholder="0">
+            <input type="number" id="inpA" min="0" placeholder="0" oninput="window.calculatePct()">
           </div>
         </div>
 
-        <button class="btn-save" id="btnSaveData">💾 Salvar Progresso</button>
+        <button class="btn-save" onclick="window.saveData()">💾 Salvar Progresso</button>
       </div>
     </section>
 
@@ -439,16 +442,16 @@
 <!-- MODAL FLUTUANTE -->
 <div class="modal-overlay" id="dayModal">
   <div class="modal-card">
-    <button class="modal-close" id="btnCloseModal">&times;</button>
+    <button class="modal-close" onclick="window.closeModal()">&times;</button>
     <span class="badge-phase" id="mPhase">DIA 1</span>
     <h3 id="mArea" style="font-size: 20px; font-weight: 700; margin-bottom: 6px; color: #0F172A;">—</h3>
     <p id="mTopic" style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 20px;">—</p>
-    <button class="btn-save" style="width: 100%; margin: 0;" id="btnConfirmModal">Fechar</button>
+    <button class="btn-save" style="width: 100%; margin: 0;" onclick="window.closeModal()">Fechar</button>
   </div>
 </div>
 
 <script>
-  // BANCO DE DADOS DA TRILHA DE 47 DIAS
+  // BANCO DE DADOS COMPLETO DOS 47 DIAS DO REVALIDA
   const trilhaData = [
     { day: 1, area: 'Cirurgia', cls: 'bg-cirurgia', topic: 'ATLS - ABCDE do trauma + Pneumotórax' },
     { day: 2, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Princípios do SUS e Regulamentação' },
@@ -461,8 +464,4 @@
     { day: 9, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Indicadores de Saúde e Transição Epidemiológica' },
     { day: 10, area: 'Pediatria', cls: 'bg-pediatria', topic: 'Calendário de Vacinação e Imunizações' },
     { day: 11, area: 'GO', cls: 'bg-ginecologia', topic: 'Síndromes Hipertensivas na Gestação e DHEG' },
-    { day: 12, area: 'Clínica', cls: 'bg-clinica', topic: 'Diabetes Mellitus: Diagnóstico e Complicações' },
-    { day: 13, area: 'Descanso', cls: 'bg-descanso', topic: 'Dia de Lazer' },
-    { day: 14, area: 'Simulado', cls: 'bg-simulado', topic: 'Revisão do Simulado + Caderno de Erros' },
-    { day: 15, area: 'Cirurgia', cls: 'bg-cirurgia', topic: 'Hérnias da Parede Abdominal' },
-    { day: 16, area: 'Preventiva', cls: 'bg-preventiva', topic: 'Estudos Epidemiológicos: Coorte e Caso-Controle' },
+    { day: 12, area: 'Clínica', cls: 'bg-clinica', t
